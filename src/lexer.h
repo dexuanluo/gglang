@@ -30,7 +30,6 @@ class Token{
         Token(string type_, string val_){
             type = type_;
             val = val_;
-            cout << "[" + type + "]" + "[" + val + "]" << endl;
         }
 
 };
@@ -92,7 +91,7 @@ public:
     vector<Token> token_maker(){
         vector<Token> tokens;
         while (cur_char != "EOT"){
-            if (cur_char == " "){
+            if (cur_char == " " || cur_char == "\t" || cur_char == "\n" || cur_char == "\\" || cur_char == "\a"){
                 next();
             }else if(is_digit(cur_char, DIGITS)){
                 tokens.push_back(number_maker());
@@ -115,8 +114,7 @@ public:
                 tokens.push_back(Token(TT_RPAREN, ")"));
                 next();
             }else{
-
-                string err_msg = ("ERROR HAPPENS AT POSITION " + cur_char) + "  ";
+                string err_msg = "DO NOT PUT MEANINGLESS THINGS LIKE  " + cur_char + "  " + " LOL";
                 return vector<Token>({Token(TT_ERR, err_msg)});
             }
         }

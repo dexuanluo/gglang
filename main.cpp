@@ -1,21 +1,41 @@
 #include <iostream>
 #include <string>
-#include "./src/gg.h"
+#include "src/lexer.h"
 using namespace std;
 
 int main() {
-    cout << "___________________________"<< endl;
+
     cout << "gg_lang ver 1.0"<< endl;
     cout << "Author: DL"<< endl;
-    cout << "___________________________"<< endl;
+    cout << endl;
+    cout << "         $$$$$$$" << endl;
+    cout << "         $$    $$" << endl;
+    cout << "         $$    $$" << endl;
+    cout << "         $$    $$" << endl;
+    cout << "         $$    $$" << endl;
+    cout << "         $$    $$$$$$$" << endl;
+    cout << "   $$$$$$$$    $$    $$" << endl;
+    cout << " $$$$$   $$    $$    $$$$$$" << endl;
+    cout << "$$$ $$   $$    $$    $$   $$" << endl;
+    cout << "$$  $$   $$    $$    $$$   $$" << endl;
+    cout << "$$  $$   $$    $$    $     $$" << endl;
+    cout << "$$   $$$  $$$$  $$$$   $  $$" << endl;
+    cout << "$$                        $$" << endl;
+    cout << " $$                       $$" << endl;
+    cout << "   $$$                 $$" << endl;
+    cout << endl;
     while (true){
         string input_txt;
-        string tmp = " ";
         cout << "gg > ";
         getline(cin, input_txt);
-
-        run(input_txt);
+        auto tokens = run(input_txt);
+        for(auto iter = tokens.begin(); iter != tokens.end(); ++iter){
+            cout << "[" + iter->type + "," + iter->val + "] ";
+        }
+        cout <<endl;
 
     }
     return 0;
 }
+
+
