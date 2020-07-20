@@ -11,25 +11,28 @@ using namespace std;
 //#########################
 //  Tokens
 //########################
-string DIGITS = "0123456789";
-string TT_ERR = "TT_ERROR";
-string TT_INT = "TT_INT";
-string TT_FLOAT = "TT_FLOAT";
-string TT_PLUS = "TT_PLUS";
-string TT_MINUS = "TT_MINUS";
-string TT_MUL = "TT_MUL";
-string TT_DIV = "TT_DIV";
-string TT_LPAREN = "TT_LPAREN";
-string TT_RPAREN = "TT_RPAREN";
+const string& DIGITS = *new string("0123456789");
+const string& TT_ERR = *new string("TT_ERROR");
+const string& TT_INT = *new string("TT_INT");
+const string& TT_FLOAT = *new string("TT_FLOAT");
+const string& TT_PLUS = *new string("TT_PLUS");
+const string& TT_MINUS = *new string("TT_MINUS");
+const string& TT_MUL = *new string("TT_MUL");
+const string& TT_DIV = *new string("TT_DIV");
+const string& TT_LPAREN = *new string("TT_LPAREN");
+const string& TT_RPAREN = *new string("TT_RPAREN");
 
 
 class Token{
     public:
         string type;
         string val;
-        Token(string type_, string val_){
+        Token(const string& type_, string val_){
             type = type_;
             val = val_;
+        }
+        Token(const string& type_){
+            type = type_;
         }
 
 };
@@ -60,7 +63,8 @@ public:
             cur_char = "EOT";
         }
     }
-    bool is_digit(string& cur, string& digits){
+    bool is_digit(string& cur, const string& digits){
+
         for (int i = 0; i < digits.size(); ++i){
 
             if (cur[0] - digits[i] == 0) {
@@ -96,22 +100,22 @@ public:
             }else if(is_digit(cur_char, DIGITS)){
                 tokens.push_back(number_maker());
             }else if(cur_char == "+"){
-                tokens.push_back(Token(TT_PLUS, "+"));
+                tokens.push_back(Token(TT_PLUS));
                 next();
             }else if(cur_char == "-"){
-                tokens.push_back(Token(TT_MINUS, "-"));
+                tokens.push_back(Token(TT_MINUS));
                 next();
             }else if(cur_char == "*"){
-                tokens.push_back(Token(TT_MUL, "*"));
+                tokens.push_back(Token(TT_MUL));
                 next();
             }else if(cur_char == "/"){
-                tokens.push_back(Token(TT_DIV, "/"));
+                tokens.push_back(Token(TT_DIV));
                 next();
             }else if(cur_char == "("){
-                tokens.push_back(Token(TT_LPAREN, "("));
+                tokens.push_back(Token(TT_LPAREN));
                 next();
             }else if(cur_char == ")"){
-                tokens.push_back(Token(TT_RPAREN, ")"));
+                tokens.push_back(Token(TT_RPAREN));
                 next();
             }else{
                 string err_msg = "DO NOT PUT MEANINGLESS THINGS LIKE  " + cur_char + "  " + " LOL";
@@ -128,7 +132,7 @@ public:
 //########################
 
 
-vector<Token> run(string text){
+vector<Token> run(string& text){
     Lexer lexer(text);
     return lexer.token_maker();
 }
