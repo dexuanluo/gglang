@@ -11,16 +11,17 @@ using namespace std;
 //#########################
 //  Tokens
 //########################
-const string& DIGITS = *new string("0123456789");
-const string& TT_ERR = *new string("TT_ERROR");
-const string& TT_INT = *new string("TT_INT");
-const string& TT_FLOAT = *new string("TT_FLOAT");
-const string& TT_PLUS = *new string("TT_PLUS");
-const string& TT_MINUS = *new string("TT_MINUS");
-const string& TT_MUL = *new string("TT_MUL");
-const string& TT_DIV = *new string("TT_DIV");
-const string& TT_LPAREN = *new string("TT_LPAREN");
-const string& TT_RPAREN = *new string("TT_RPAREN");
+const string DIGITS("0123456789");
+const string TT_ERR("TT_ERROR");
+const string TT_INT("TT_INT");
+const string TT_FLOAT("TT_FLOAT");
+const string TT_PLUS("TT_PLUS");
+const string TT_MINUS("TT_MINUS");
+const string TT_MUL("TT_MUL");
+const string TT_DIV ("TT_DIV");
+const string TT_LPAREN("TT_LPAREN");
+const string TT_RPAREN("TT_RPAREN");
+const string ENDOFTXT("EOT");
 
 
 class Token{
@@ -60,13 +61,12 @@ public:
 
             cur_char = string({text[pos]});
         }else{
-            cur_char = "EOT";
+            cur_char = ENDOFTXT;
         }
     }
     bool is_digit(string& cur, const string& digits){
 
         for (int i = 0; i < digits.size(); ++i){
-
             if (cur[0] - digits[i] == 0) {
                 return true;
             }
@@ -78,7 +78,7 @@ public:
     Token number_maker(){
         string tmp;
         int dot_count = 0;
-        while (cur_char != "EOT" && (is_digit(cur_char, DIGITS) || cur_char == ".")){
+        while (cur_char != ENDOFTXT && (is_digit(cur_char, DIGITS) || cur_char == ".")){
             if(cur_char == "."){
                 if(dot_count == 1){break;}
                 ++dot_count;
@@ -94,7 +94,7 @@ public:
 
     vector<Token> token_maker(){
         vector<Token> tokens;
-        while (cur_char != "EOT"){
+        while (cur_char != ENDOFTXT){
             if (cur_char == " " || cur_char == "\t" || cur_char == "\n" || cur_char == "\\" || cur_char == "\a"){
                 next();
             }else if(is_digit(cur_char, DIGITS)){
