@@ -11,6 +11,7 @@ using namespace std;
 //#########################
 //  Tokens
 //########################
+const string GG("gg");
 const string DIGITS("0123456789");
 const string TT_ERR("TT_ERROR");
 const string TT_INT("TT_INT");
@@ -22,6 +23,17 @@ const string TT_DIV ("TT_DIV");
 const string TT_LPAREN("TT_LPAREN");
 const string TT_RPAREN("TT_RPAREN");
 const string ENDOFTXT("EOT");
+const string OP_PLUS("+");
+const string OP_MINUS("-");
+const string OP_MUL("*");
+const string OP_DIV("/");
+const string LPAREN("(");
+const string RPAREN(")");
+const string WS_NEWLINE("\n");
+const string WS_ESCAPE("\\");
+const string WS_TAB("\t");
+const string WS_SPACE(" ");
+const string DOT(".");
 
 
 class Token{
@@ -46,7 +58,6 @@ public:
     string text;
     long int pos = -1;
     string cur_char;
-
     Lexer(string text_){
         text = text_;
         next();
@@ -78,12 +89,13 @@ public:
     Token number_maker(){
         string tmp;
         int dot_count = 0;
-        while (cur_char != ENDOFTXT && (is_digit(cur_char, DIGITS) || cur_char == ".")){
+        while (cur_char != ENDOFTXT && (is_digit(cur_char, DIGITS) ||\
+        cur_char == DOT || cur_char == WS_TAB|| cur_char == WS_ESCAPE || cur_char == WS_NEWLINE || cur_char == WS_SPACE)){
             if(cur_char == "."){
                 if(dot_count == 1){break;}
                 ++dot_count;
-                tmp += ".";
-            }else{
+                tmp += DOT;
+            }else if (is_digit(cur_char, DIGITS)){
                 tmp += cur_char;
             }
             next();
@@ -95,26 +107,26 @@ public:
     vector<Token> token_maker(){
         vector<Token> tokens;
         while (cur_char != ENDOFTXT){
-            if (cur_char == " " || cur_char == "\t" || cur_char == "\n" || cur_char == "\\" || cur_char == "\a"){
+            if (cur_char == WS_SPACE || cur_char == WS_TAB || cur_char == WS_NEWLINE || cur_char == WS_ESCAPE){
                 next();
             }else if(is_digit(cur_char, DIGITS)){
                 tokens.push_back(number_maker());
-            }else if(cur_char == "+"){
+            }else if(cur_char == OP_PLUS){
                 tokens.push_back(Token(TT_PLUS));
                 next();
-            }else if(cur_char == "-"){
+            }else if(cur_char == OP_MINUS){
                 tokens.push_back(Token(TT_MINUS));
                 next();
-            }else if(cur_char == "*"){
+            }else if(cur_char == OP_MUL){
                 tokens.push_back(Token(TT_MUL));
                 next();
-            }else if(cur_char == "/"){
+            }else if(cur_char == OP_DIV){
                 tokens.push_back(Token(TT_DIV));
                 next();
-            }else if(cur_char == "("){
+            }else if(cur_char == LPAREN){
                 tokens.push_back(Token(TT_LPAREN));
                 next();
-            }else if(cur_char == ")"){
+            }else if(cur_char == RPAREN){
                 tokens.push_back(Token(TT_RPAREN));
                 next();
             }else{
