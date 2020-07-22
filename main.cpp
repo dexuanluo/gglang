@@ -1,12 +1,25 @@
 #include <iostream>
 #include <string>
-#include "src/lexer.h"
+#include "src/parser.h"
+//#include "src/lexer.h"
 using namespace std;
+
+
 //###########################
 //Interface
 //###########################
-const string GG_ARROW("gg >");
+const string GG_ARROW("gg >>>");
 const string GG_TMP_ARROW("> ");
+
+
+
+Node* run(string& text){
+    Lexer lexer(text);
+    vector<Token> tokens = lexer.token_maker();
+    Parser parser(tokens);
+    return parser.parse();
+}
+
 int main() {
 
     cout << "gg_lang ver 1.0"<< endl;
@@ -29,30 +42,32 @@ int main() {
     cout << "   $$$                 $$" << endl;
     cout << endl;
 
+
     while (true){
         cout << GG_ARROW;
         string input_txt;
-        string tmp(WS_ESCAPE);
-        while (tmp.size() > 0 && string({tmp[tmp.size() - 1]}) == WS_ESCAPE){
+        string tmp(ESCAPE);
+        while (tmp.size() > 0 && string({tmp[tmp.size() - 1]}) == ESCAPE){
             getline(cin, tmp);
             input_txt += tmp;
             cout << GG_TMP_ARROW;
         }
-        auto tokens = run(input_txt);
+
         if (input_txt == GG){
             cout << "Bye" << endl;
             return 0;
         }
-        for(auto iter = tokens.begin(); iter != tokens.end(); ++iter){
 
-            if (iter->val.size() > 0){
-                cout << "[" + iter->type + "," + iter->val + "] ";
-            }else{
-                cout << "[" + iter->type + "] ";
-            }
+        Node* syntax_tree = run(input_txt);
+        if (syntax_tree == nullptr){
+            cout << "Parser Error"<<endl;
 
+        }else{
+            cout << syntax_tree->dfs()<<endl;
         }
-        cout << endl;
+
+
+
 
     }
     return 0;
