@@ -48,7 +48,7 @@ public:
     }
     string dfs(){
 
-        string res;
+
         string left;
         string right;
         if (left_node != nullptr){
@@ -62,84 +62,123 @@ public:
 
 };
 
+class UnaryOpNode: public Node {
+public:
+    Node *node;
 
-class Parser{
+    UnaryOpNode() {}
+
+    UnaryOpNode(Token token_, Node *node_) {
+        node = node_;
+        token = token_;
+    }
+
+    ~UnaryOpNode() {
+        if (node != nullptr) {
+            delete node;
+            node = nullptr;
+        }
+
+    }
+    string dfs(){
+        return "(" + token.type + " ,"+ node->dfs() + ")" ;
+    }
+};
+
+class Parser {
 
 public:
     vector<Token> tokens;
     vector<Token>::iterator cur;
     long int token_idx;
 
-    Parser(vector<Token> tokens_){
+    Parser(vector<Token> tokens_) {
         tokens = tokens_;
         token_idx = 0;
         cur = tokens.begin();
-        for (auto i = tokens.begin(); i != tokens.end(); ++i){
-            cout << "[" + i->val +", " + i->type +"]";
+        for (auto i = tokens.begin(); i != tokens.end(); ++i) {
+            cout << "[" + i->val + ", " + i->type + "]";
         }
         cout << endl;
     }
 
-    void next(){
-        if (cur != tokens.end()){
+    void next() {
+        if (cur != tokens.end()) {
             ++token_idx;
             ++cur;
         }
     }
-    Node* parse(){
-        Node* res = expression();
+
+    Node *parse() {
+        Node *res = expression();
         if (cur != tokens.end()){
-            return nullptr;
+            delete res;
+            res = nullptr;
+            return new Node(Token(TT_ERR, "Parser Error: Unexpected Token: " + cur->type));
         }
         return res;
     }
-    Node* factor(){
-        while(cur != tokens.end()&& (cur->type == TT_WS || cur->type == TT_ESCAPE)){
+
+    Node *factor() {
+        while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
             next();
         }
-        if (cur != tokens.end() && (cur->type == TT_FLOAT || cur->type == TT_INT)){
-            Node* res = new NumberNode(*cur);
-            next();
-            return res;
+        if (cur != tokens.end()) {
+            if (cur->type == TT_PLUS || cur->type == TT_MINUS) {
+                Token token = *cur;
+                next();
+                Node *res = new UnaryOpNode(token, factor());
+                return res;
+            } else if (cur->type == TT_FLOAT || cur->type == TT_INT) {
+                Node *res = new NumberNode(*cur);
+                next();
+                return res;
+            } else if (cur->type == TT_LPAREN) {
+                next();
+                Node *res = expression();
+                if (cur == tokens.end() || cur->type != TT_RPAREN) {
+                    delete res;
+                    return new Node(Token(TT_ERR, "Parser Error: Expecting ')'"));
+                }
+                next();
+                return res;
+            }
         }
-        return new Node(Token(TT_ERR));
+        return new Node(Token(TT_ERR, "Parser Error: Unexpected Token: " + cur->type));
     }
 
-    Node* term(){
-        Node* left = factor();
-        Node* right = nullptr;
-        while (cur != tokens.end() &&( cur->type == TT_MUL || cur->type == TT_DIV || cur->type == TT_WS || cur->type == TT_ESCAPE)){
-            if (cur->type == TT_WS || cur->type == TT_ESCAPE){
+    Node *term() {
+        Node *left = factor();
+        Node *right = nullptr;
+        while (cur != tokens.end() &&
+               (cur->type == TT_MUL || cur->type == TT_DIV || cur->type == TT_WS || cur->type == TT_ESCAPE)) {
+            if (cur->type == TT_WS || cur->type == TT_ESCAPE) {
                 next();
-            }else{
+            } else {
                 Token token = *cur;
                 next();
                 right = factor();
                 left = new BinOpNode(left, token, right);
             }
 
-
         }
-
         return left;
-
     }
-    Node* expression(){
-        Node* left = term();
-        Node* right = nullptr;
-        while (cur != tokens.end() &&( cur->type == TT_PLUS || cur->type == TT_MINUS ||\
-        cur->type == TT_WS || cur->type == TT_ESCAPE)){
-            if (cur->type == TT_WS || cur->type == TT_ESCAPE){
+
+    Node *expression() {
+        Node *left = term();
+        Node *right = nullptr;
+        while (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS || \
+    cur->type == TT_WS || cur->type == TT_ESCAPE)) {
+            if (cur->type == TT_WS || cur->type == TT_ESCAPE) {
                 next();
-            }else{
+            } else {
                 Token token = *cur;
                 next();
                 right = term();
                 left = new BinOpNode(left, token, right);
             }
-
         }
-
         return left;
     }
 };

@@ -152,7 +152,7 @@ public:
                 ws_count = 0;
                 next();
             }else{
-                string err_msg = "Lexer error meaningless symbol  " + cur_char + "  " + " LOL";
+                string err_msg = "Lexer Error meaningless symbol  " + cur_char + "  " + " LOL";
                 return vector<Token>({Token(TT_ERR, err_msg)});
             }
         }
