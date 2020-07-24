@@ -33,7 +33,7 @@ int run(string& text){
     cout << syntax_tree->dfs() << endl;
     Executor executor(syntax_tree);
     GG_Object* result = executor.execute(executor.root);
-
+    delete syntax_tree;
     if (error_check->is_error()){
         error_check->display_msg();
         return -1;

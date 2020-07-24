@@ -42,7 +42,7 @@ const string BINARY_OP_NODE("BINARY_OP_NODE");
 const string UNARY_OP_NODE("UNARY_OP_NODE");
 const string LEXER_ERR_NODE("LEXER_ERR");
 const string PARSER_ERR_NODE("PARSER_ERR");
-const string EXECUTOR_ERR_NODE("EXECUTOR_ERR");
+const string RUNTIME_ERR_NODE("RUNTIME_ERR");
 //###################################
 
 

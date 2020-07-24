@@ -34,12 +34,12 @@ public:
 
 };
 
-class ExecutorError: public Error{
+class RuntimeError: public Error{
 public:
 
-    ExecutorError(Token token_){
+    RuntimeError(Token token_){
         token = token_;
-        node_type = EXECUTOR_ERR_NODE;
+        node_type = RUNTIME_ERR_NODE;
     }
 
 };

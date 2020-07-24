@@ -63,7 +63,7 @@ public:
                 int_val = stoi(node->token.get_string_val());
             } catch (const std::exception& e) {
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Integer Overflow at " + node->token.get_string_val())));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Integer Overflow at " + node->token.get_string_val())));
             }
 
         }
@@ -72,7 +72,7 @@ public:
                 dl_val = stod(node->token.get_string_val());
             } catch (const std::exception& e) {
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Floating Point Overflow at " + node->token.get_string_val())));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Floating Point Overflow at " + node->token.get_string_val())));
             }
         }
     }
@@ -99,7 +99,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Addition Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -111,7 +111,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Addition Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -123,7 +123,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Addition Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -134,7 +134,7 @@ public:
                 return new Numeric(this->get_dl_val() + other->get_int_val());
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Addition Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -151,7 +151,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Subtraction Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -163,7 +163,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Subtraction Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -175,7 +175,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Subtraction Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -186,7 +186,7 @@ public:
                 return new Numeric(this->get_dl_val() - other->get_int_val());
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Subtraction Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -203,7 +203,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Multiplication Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -215,7 +215,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Multiplication Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -227,7 +227,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Multiplication Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -238,7 +238,7 @@ public:
                 return new Numeric(this->get_dl_val() * other->get_int_val());
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Multiplication Caused Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -259,7 +259,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Division by 0 or Number Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -271,7 +271,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Division by 0 or Number Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -283,7 +283,7 @@ public:
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Division by 0 or Number Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -294,7 +294,7 @@ public:
                 return new Numeric(this->get_dl_val() / other->get_int_val());
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
-                error_check->err_register(new ExecutorError(Token(EXECUTOR_ERR_NODE, "Division by 0 or Number Overflow")));
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
                 return new Numeric(0.0);
             }
 
@@ -333,7 +333,7 @@ public:
         if (node->node_type == UNARY_OP_NODE){
             return visit_unary_op_node(node);
         }
-        error_check->err_register(new ExecutorError(Token(TT_ERR, "No Execution method, execution halted")));
+        error_check->err_register(new RuntimeError(Token(TT_ERR, "No Execution method, execution halted")));
         return new Numeric(0.0);
 
     }
@@ -363,13 +363,13 @@ public:
         if (node->left_node != nullptr){
             left = execute(node->left_node);
         }else{
-            error_check->err_register(new ExecutorError(Token(TT_ERR, "Unkown Error NULL Object On The Left Node Of the Parsed Tree")));
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Left Node Of the Parsed Tree")));
             return new Numeric(0.0);
         }
         if (node->right_node != nullptr){
             right = execute(node->right_node);
         }else{
-            error_check->err_register(new ExecutorError(Token(TT_ERR, "Unkown Error NULL Object On The Right Node Of the Parsed Tree")));
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Right Node Of the Parsed Tree")));
             return new Numeric(0.0);
         }
 
@@ -383,7 +383,7 @@ public:
             res = left->divided_by(right);
         }
         if (res == nullptr){
-            error_check->err_register(new ExecutorError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
         }
 
         delete left;
