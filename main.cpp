@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/parser.h"
+#include "src/main/executor.h"
 //#include "src/lexer.h"
 using namespace std;
 
@@ -7,9 +7,13 @@ using namespace std;
 //###########################
 //Interface
 //###########################
-const string GG_ARROW("gg >>>");
-const string GG_TMP_ARROW("> ");
+const string GG_ARROW("gg >>");
 
+
+
+//#########################
+//  Run
+//########################
 
 
 int run(string& text){
@@ -27,7 +31,19 @@ int run(string& text){
         return -1;
     }
     cout << syntax_tree->dfs() << endl;
-    delete syntax_tree;
+    Executor executor(syntax_tree);
+    GG_Object* result = executor.execute(executor.root);
+
+    if (error_check->is_error()){
+        error_check->display_msg();
+        return -1;
+    }
+
+    if (result->get_type()== TT_INT){
+        cout << result->get_int_val()<<endl;
+    }else if (result->get_type() == TT_FLOAT){
+        cout << result->get_dl_val()<<endl;
+    }
     return 0;
 
 }
@@ -35,7 +51,7 @@ int run(string& text){
 int main() {
 
     cout << "gg_lang ver 1.0"<< endl;
-    cout << "Author: DL"<< endl;
+    cout << "Author: Dexuan Luo"<< endl;
     cout << endl;
     cout << "         $$$$$$$" << endl;
     cout << "         $$    $$" << endl;
@@ -62,7 +78,6 @@ int main() {
         while (tmp.size() > 0 && string({tmp[tmp.size() - 1]}) == ESCAPE){
             getline(cin, tmp);
             input_txt += tmp;
-            cout << GG_TMP_ARROW;
         }
 
         if (input_txt == GG){
@@ -71,7 +86,6 @@ int main() {
         }
 
         run(input_txt);
-
 
 
 

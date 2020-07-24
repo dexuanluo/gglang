@@ -2,6 +2,8 @@
 // Created by Dexuan on 2020-07-23.
 //
 #include <string>
+#include <any>
+#include <sstream>
 #ifndef GG_LANG_TOKEN_H
 #define GG_LANG_TOKEN_H
 using namespace std;
@@ -40,19 +42,39 @@ const string BINARY_OP_NODE("BINARY_OP_NODE");
 const string UNARY_OP_NODE("UNARY_OP_NODE");
 const string LEXER_ERR_NODE("LEXER_ERR");
 const string PARSER_ERR_NODE("PARSER_ERR");
+const string EXECUTOR_ERR_NODE("EXECUTOR_ERR");
 //###################################
+
+
 class Token{
 public:
     string type;
-    string val;
+
     Token(){}
+
     Token(const string& type_, string val_){
         type = type_;
         val = val_;
     }
+
     Token(const string& type_){
         type = type_;
     }
 
+    string get_string_val(){
+        return val;
+    }
+private:
+    string val;
 };
+
+
+template<typename T>
+string any_to_str(T val){
+    stringstream s;
+    s << val;
+    return s.str();
+}
+
+
 #endif //GG_LANG_TOKEN_H
