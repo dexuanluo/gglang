@@ -29,7 +29,6 @@ public:
     Lexer(string text_){
         text = text_;
         next();
-
     }
 
     ~Lexer(){}

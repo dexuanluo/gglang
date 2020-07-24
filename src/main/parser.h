@@ -65,6 +65,7 @@ public:
         error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
         return res;
     }
+
     Node *power(){
         skip_WS();
         Node* left = atom();
@@ -77,6 +78,7 @@ public:
 
         return left;
     }
+
     Node *factor() {
         skip_WS();
         Node* res = nullptr;
@@ -130,11 +132,12 @@ public:
         }
         return left;
     }
+
     void skip_WS(){
         while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
             next();
         }
-    }
+    } // Skipping white space
 };
 
 
