@@ -41,30 +41,53 @@ public:
         return res;
     }
 
-    Node *factor() {
-        while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
-            next();
-        }
+    Node *atom(){
+        skip_WS();
         Node* res = nullptr;
-        if (cur != tokens.end()) {
-            if (cur->type == TT_PLUS || cur->type == TT_MINUS) {
-                Token token = *cur;
-                next();
-                res = new UnaryOpNode(token, factor());
-                return res;
-            } else if (cur->type == TT_FLOAT || cur->type == TT_INT) {
-                Node *res = new NumberNode(*cur);
+        if (cur != tokens.end()){
+            if (cur->type == TT_FLOAT || cur->type == TT_INT) {
+                res = new NumberNode(*cur);
                 next();
                 return res;
             } else if (cur->type == TT_LPAREN) {
                 next();
-                Node *res = expression();
+                res = expression();
                 if (cur == tokens.end() || cur->type != TT_RPAREN) {
                     delete res;
                     res = nullptr;
                     error_check->err_register(new ParserError(Token(TT_ERR, "Expecting ')'")));
                 }
                 next();
+                return res;
+            }
+        }
+
+        error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
+        return res;
+    }
+    Node *power(){
+        skip_WS();
+        Node* left = atom();
+        if (cur != tokens.end() && cur->type == TT_POW){
+            Token token = *cur;
+            next();
+            Node* right = atom();
+            return new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+    Node *factor() {
+        skip_WS();
+        Node* res = nullptr;
+        if (cur != tokens.end()) {
+            if(cur->type == TT_INT || cur->type == TT_FLOAT){
+                res = power();
+                return res;
+            }else if (cur->type == TT_PLUS || cur->type == TT_MINUS) {
+                Token token = *cur;
+                next();
+                res = new UnaryOpNode(token, power());
                 return res;
             }
         }
@@ -106,6 +129,11 @@ public:
             }
         }
         return left;
+    }
+    void skip_WS(){
+        while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
+            next();
+        }
     }
 };
 

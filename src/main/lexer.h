@@ -162,6 +162,18 @@ public:
         return 0;
     }
 
+    short int  handle_OP_POW(vector<Token>* tokens){
+        if(cur_char == OP_POW){
+            tokens->push_back(Token(TT_POW));
+            if (ws_count != 0){
+                ws_count = 0;
+            }
+            next();
+            return 1;
+        }
+        return 0;
+    }
+
     short int handle_LPAREN(vector<Token>* tokens){
         if(cur_char == LPAREN){
             tokens->push_back(Token(TT_LPAREN));
@@ -204,6 +216,8 @@ public:
             }else if(handle_OP_MUL(tokens)){
 
             }else if(handle_OP_DIV(tokens)){
+
+            }else if(handle_OP_POW(tokens)){
 
             }else if(handle_LPAREN(tokens)){
 

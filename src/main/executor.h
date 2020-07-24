@@ -2,9 +2,10 @@
 // Created by Dexuan on 2020-07-23.
 //
 #include "parser.h"
+#include <cmath>
 #ifndef GG_LANG_EXECUTOR_H
 #define GG_LANG_EXECUTOR_H
-
+using namespace std;
 //#########################################
 //    Parsed Tree Executor
 //#########################################
@@ -28,13 +29,17 @@ public:
         return other;
     }
 
+    virtual GG_Object* power_to(GG_Object* other){
+        return other;
+    }
+
     virtual long int get_int_val(){
         long int i;
         return i;
     }
 
     virtual string get_type(){
-        return "0.0";
+        return "surprise you found a bug";
     }
 
     virtual double get_dl_val(){
@@ -302,6 +307,62 @@ public:
         }
     }
 
+    GG_Object* power_to(GG_Object* other) override{
+
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+
+                return new Numeric(pow(this->get_int_val(), other->get_int_val()));
+
+
+            }catch(const std::exception& e){
+                cout << e.what() << endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
+                return new Numeric(0.0);
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                return new Numeric(pow(this->get_int_val(), other->get_dl_val()));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
+                return new Numeric(0.0);
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                return new Numeric(pow(this->get_dl_val(), other->get_dl_val()));
+
+            }catch(const std::exception& e){
+                cout << e.what() << endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
+                return new Numeric(0.0);
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                return new Numeric(pow(this->get_dl_val(), other->get_int_val()));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
+                return new Numeric(0.0);
+            }
+
+
+        }
+    }
+
+
+
 
 private:
     long int int_val;
@@ -381,6 +442,8 @@ public:
             res = left->multiplied_by(right);
         }else if (node->token.type == TT_DIV){
             res = left->divided_by(right);
+        }else if (node->token.type == TT_POW){
+            res = left->power_to(right);
         }
         if (res == nullptr){
             error_check->err_register(new RuntimeError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
@@ -390,7 +453,6 @@ public:
         delete right;
         left = nullptr;
         right = nullptr;
-
         return res;
     }
 };

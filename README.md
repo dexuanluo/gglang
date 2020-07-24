@@ -9,6 +9,12 @@
         factor((MUL | DIV)factor)*
 
 #### factor: <br/>
+        (PLUS|MINUS) power
+        power
+        
+#### atom: <br/>
         INT | FLOAT
         LPAREN expr RPAREN
-        PLUS|MINUS INT
+        
+#### power: <br/>
+        atom (POW factor)*
