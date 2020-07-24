@@ -1,15 +1,14 @@
+# Supported Grammar
 
-#Supported Grammar
+##### Author: Dexuan Luo
 
-#####Author: Dexuan Luo
+#### expr: <br/>
+        term((PLUS|MINUS) term)*
 
-####expr: <br/>
-        term((PLUS|MINUS) term)*<br/>
+#### term: <br/>
+        factor((MUL | DIV)factor)*
 
-####term: <br/>
-        factor((MUL | DIV)factor)*<br/>
-
-####factor: <br/>
-        INT | FLOAT<br/>
-        LPAREN expr RPAREN<br/>
-        PLUS|MINUS INT<br/>
+#### factor: <br/>
+        INT | FLOAT
+        LPAREN expr RPAREN
+        PLUS|MINUS INT
