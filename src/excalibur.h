@@ -35,7 +35,6 @@ public:
 
 class Excalibur{
 public:
-    Error* error = nullptr;
     Excalibur(){}
     void err_register(Error* error_){
         if (error != nullptr){
@@ -43,16 +42,24 @@ public:
         }
         error = error_;
     }
-
+    bool is_error(){
+        return error == nullptr;
+    }
     void display_msg(){
         if (error != nullptr){
             error->err_msg();
-            delete error;
-            error = nullptr;
+            release_error();
         }else{
-            cout << "No Error Found" << endl;
+            cout << no_err << endl;
         }
     }
+    void release_error(){
+        delete error;
+        error = nullptr;
+    }
+private:
+    Error* error = nullptr;
+    string no_err = "No Error Found";
 };
 
 

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "ErrorObserver.h"
+#include "excalibur.h"
 #include "token.h"
 #ifndef GG_LANG_GG_H
 #define GG_LANG_GG_H

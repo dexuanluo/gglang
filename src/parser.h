@@ -14,7 +14,6 @@ public:
         node_type = NUMBER_NODE;
         token = token_;
     }
-
 };
 
 class BinOpNode: public Node{

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include "src/parser.h"
 //#include "src/lexer.h"
 using namespace std;
@@ -16,14 +15,14 @@ const string GG_TMP_ARROW("> ");
 int run(string& text){
     Lexer lexer(text);
     vector<Token>* tokens = lexer.token_maker();
-    if (error_check->error != nullptr){
+    if (error_check->is_error()){
         error_check->display_msg();
         return -1;
     }
     Parser parser(*tokens);
     delete tokens;
     Node* syntax_tree = parser.parse();
-    if (error_check->error != nullptr){
+    if (error_check->is_error()){
         error_check->display_msg();
         return -1;
     }
