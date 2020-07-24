@@ -13,11 +13,24 @@ const string GG_TMP_ARROW("> ");
 
 
 
-Node* run(string& text){
+int run(string& text){
     Lexer lexer(text);
-    vector<Token> tokens = lexer.token_maker();
-    Parser parser(tokens);
-    return parser.parse();
+    vector<Token>* tokens = lexer.token_maker();
+    if (error_check->error != nullptr){
+        error_check->display_msg();
+        return -1;
+    }
+    Parser parser(*tokens);
+    delete tokens;
+    Node* syntax_tree = parser.parse();
+    if (error_check->error != nullptr){
+        error_check->display_msg();
+        return -1;
+    }
+    cout << syntax_tree->dfs() << endl;
+    delete syntax_tree;
+    return 0;
+
 }
 
 int main() {
@@ -58,13 +71,7 @@ int main() {
             return 0;
         }
 
-        Node* syntax_tree = run(input_txt);
-        if (syntax_tree == nullptr){
-            cout << "Parser Error"<<endl;
-
-        }else{
-            cout << syntax_tree->dfs()<<endl;
-        }
+        run(input_txt);
 
 
 

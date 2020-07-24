@@ -2,39 +2,33 @@
 // Created by Dexuan on 2020-07-21.
 //
 #include "lexer.h"
+#include "node.h"
 #ifndef GG_LANG_PARSER_H
 #define GG_LANG_PARSER_H
-class Node{
-public:
-    Token token;
-    Node(){}
-    Node(Token token_){
-        token = token_;
-    }
-    virtual ~Node(){}
-    virtual string dfs(){
-        return token.type +": " + token.val;
-    }
-};
-
-
 class NumberNode: public Node{
 public:
-    NumberNode(){}
+    NumberNode(){
+        node_type = NUMBER_NODE;
+    }
     NumberNode(Token& token_){
+        node_type = NUMBER_NODE;
         token = token_;
     }
 
 };
+
 class BinOpNode: public Node{
 public:
     Node* left_node;
     Node* right_node;
-    BinOpNode(){}
+    BinOpNode(){
+        node_type = BINARY_OP_NODE;
+    }
     BinOpNode(Node* left, Token token_, Node* right){
         left_node = left;
         token = token_;
         right_node = right;
+        node_type = BINARY_OP_NODE;
     };
     ~BinOpNode(){
         if (left_node != nullptr){
@@ -47,8 +41,6 @@ public:
         }
     }
     string dfs(){
-
-
         string left;
         string right;
         if (left_node != nullptr){
@@ -65,12 +57,13 @@ public:
 class UnaryOpNode: public Node {
 public:
     Node *node;
-
-    UnaryOpNode() {}
-
+    UnaryOpNode() {
+        node_type = UNARY_OP_NODE;
+    }
     UnaryOpNode(Token token_, Node *node_) {
         node = node_;
         token = token_;
+        node_type = UNARY_OP_NODE;
     }
 
     ~UnaryOpNode() {
@@ -114,7 +107,7 @@ public:
         if (cur != tokens.end()){
             delete res;
             res = nullptr;
-            return new Node(Token(TT_ERR, "Parser Error: Unexpected Token: " + cur->type));
+            error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
         }
         return res;
     }
@@ -123,11 +116,12 @@ public:
         while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
             next();
         }
+        Node* res = nullptr;
         if (cur != tokens.end()) {
             if (cur->type == TT_PLUS || cur->type == TT_MINUS) {
                 Token token = *cur;
                 next();
-                Node *res = new UnaryOpNode(token, factor());
+                res = new UnaryOpNode(token, factor());
                 return res;
             } else if (cur->type == TT_FLOAT || cur->type == TT_INT) {
                 Node *res = new NumberNode(*cur);
@@ -138,13 +132,15 @@ public:
                 Node *res = expression();
                 if (cur == tokens.end() || cur->type != TT_RPAREN) {
                     delete res;
-                    return new Node(Token(TT_ERR, "Parser Error: Expecting ')'"));
+                    res = nullptr;
+                    error_check->err_register(new ParserError(Token(TT_ERR, "Expecting ')'")));
                 }
                 next();
                 return res;
             }
         }
-        return new Node(Token(TT_ERR, "Parser Error: Unexpected Token: " + cur->type));
+        error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
+        return res;
     }
 
     Node *term() {
