@@ -16,7 +16,7 @@ using namespace std;
 //########################
 
 //Initializing Singleton Error Checker
-Excalibur * const error_check = new Excalibur();
+static Excalibur * const error_check = new Excalibur();
 
 
 class Lexer{

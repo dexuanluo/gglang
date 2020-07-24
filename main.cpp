@@ -71,21 +71,27 @@ int main() {
     cout << endl;
 
 
+
+
     while (true){
         cout << GG_ARROW;
-        string input_txt;
-        string tmp(ESCAPE);
-        while (tmp.size() > 0 && string({tmp[tmp.size() - 1]}) == ESCAPE){
-            getline(cin, tmp);
-            input_txt += tmp;
+        string* input_txt = new string();
+        string* tmp = new string(ESCAPE);
+        while (tmp->size() > 0 && string({(*tmp)[tmp->size() - 1]}) == ESCAPE){
+            getline(cin, (*tmp));
+            (*input_txt) += (*tmp);
         }
 
-        if (input_txt == GG){
+        if ((*input_txt) == GG){
             cout << "Bye" << endl;
             return 0;
         }
 
-        run(input_txt);
+        run(*input_txt);
+        delete input_txt;
+        delete tmp;
+        input_txt = nullptr;
+        tmp = nullptr;
 
 
 

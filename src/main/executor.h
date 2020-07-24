@@ -13,6 +13,10 @@ using namespace std;
 class GG_Object{
 public:
 
+    GG_Object(){
+        type = GG_OBJECT_CLASS;
+    }
+
     virtual GG_Object* added_to(GG_Object* other){
         return other;
     }
@@ -39,13 +43,31 @@ public:
     }
 
     virtual string get_type(){
-        return "surprise you found a bug";
+        return type;
     }
 
     virtual double get_dl_val(){
         return 0.0;
     }
+private:
+    string type;
 
+
+};
+
+class Undefined: public GG_Object{
+public:
+
+    Undefined(){
+        type = TT_ERR;
+    }
+
+    string get_type() override{
+        return type;
+    }
+
+private:
+    string type;
 };
 
 class Numeric: public GG_Object{
@@ -105,7 +127,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -117,7 +139,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -129,7 +151,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -140,11 +162,13 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
         }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '+' operation between " + get_type() + " and " + other->get_type())));
+        return new Undefined();
     }
 
     GG_Object* subtracted_by(GG_Object* other) override {
@@ -157,7 +181,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -169,7 +193,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -181,7 +205,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -192,11 +216,13 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
         }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '-' operation between " + get_type() + " and " + other->get_type())));
+        return new Undefined();
     }
 
     GG_Object* multiplied_by(GG_Object* other) override{
@@ -249,6 +275,8 @@ public:
 
 
         }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '*' operation between " + get_type() + " and " + other->get_type())));
+        return new Undefined();
     }
 
     GG_Object* divided_by(GG_Object* other) override{
@@ -265,7 +293,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -277,7 +305,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -289,7 +317,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -300,11 +328,13 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
         }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '/' operation between " + get_type() + " and " + other->get_type())));
+        return new Undefined();
     }
 
     GG_Object* power_to(GG_Object* other) override{
@@ -319,7 +349,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -331,7 +361,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -343,7 +373,7 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
@@ -354,14 +384,14 @@ public:
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Numeric(0.0);
+                return new Undefined();
             }
 
 
         }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '^' operation between " + get_type() + " and " + other->get_type())));
+        return new Undefined();
     }
-
-
 
 
 private:
@@ -376,6 +406,7 @@ class Executor{
 
 public:
     Node* root;
+
     Executor(Node* root_){
         root = root_;
     }
