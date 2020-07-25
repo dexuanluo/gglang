@@ -123,7 +123,8 @@ public:
                     next();
                     skip_WS();
                     Node* expr = expression();
-                    if (expr->node_type == NUMBER_NODE){
+
+                    if (expr != nullptr){
                         return new VarAssignmentNode(token, expr);
                     }
                     error_check->err_register(new ParserError(Token(TT_ERR, "Expecting a number to be assigned ")));

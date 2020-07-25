@@ -8,7 +8,9 @@ class Error{
 public:
     string node_type;
     Token token;
+
     Error(){}
+
     virtual void err_msg(){
         cout << node_type + ": " + token.get_string_val() << endl;
     }

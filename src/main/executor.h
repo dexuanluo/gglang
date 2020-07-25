@@ -59,7 +59,13 @@ public:
 
     GG_Object* visit_var_assignment_node(Node* node){
         GG_Object* to_assign = execute(node->node);
-        root_table->set(node->token.get_string_val(), to_assign);
+        if (to_assign->get_type() != TT_ERR){
+            root_table->set(node->token.get_string_val(), to_assign);
+        }else{
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "Cannot assign ERROR type")));
+            return to_assign;
+        }
+
         return new Undefined();
     }
 
