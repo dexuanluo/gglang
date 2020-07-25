@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "gg_object.h"
 #include "gg_memory.h"
+#include "../utils/avalon.h"
 #ifndef GG_LANG_EXECUTOR_H
 #define GG_LANG_EXECUTOR_H
 using namespace std;
@@ -60,17 +61,16 @@ public:
     GG_Object* visit_var_assignment_node(Node* node){
         GG_Object* to_assign = execute(node->node);
         if (to_assign->get_type() != TT_ERR){
+            to_assign->not_tmp();
             root_table->set(node->token.get_string_val(), to_assign);
         }else{
             error_check->err_register(new RuntimeError(Token(TT_ERR, "Cannot assign ERROR type")));
             return to_assign;
         }
-
         return new Undefined();
     }
 
     GG_Object* visit_number_node(Node* node){
-
         return new Numeric(node->token);
     }
 
@@ -80,8 +80,8 @@ public:
             long int i = -1;
             GG_Object* tmp = new Numeric(i);
             GG_Object* tmp2 = res->multiplied_by(tmp);
-            delete res;
-            delete tmp;
+            gc->garbage_register(res);
+            gc->garbage_register(tmp);
             return tmp2;
         }
         return res;
@@ -118,11 +118,8 @@ public:
         if (res == nullptr){
             error_check->err_register(new RuntimeError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
         }
-
-        delete left;
-        delete right;
-        left = nullptr;
-        right = nullptr;
+        gc->garbage_register(left);
+        gc->garbage_register(right);
         return res;
     }
 };

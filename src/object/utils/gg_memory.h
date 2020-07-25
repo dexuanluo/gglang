@@ -21,7 +21,7 @@ public:
         auto iter = table.find(key);
         if ( iter != table.end()){
             if (iter->second->get_type() == TT_INT || iter->second->get_type() == TT_FLOAT){
-                return new Numeric(iter->second);
+                return iter->second;
             }
             return new Undefined();
         }else if(parent != nullptr){

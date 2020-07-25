@@ -3,6 +3,7 @@
 //
 
 #include "token.h"
+
 #ifndef GG_LANG_NODE_H
 #define GG_LANG_NODE_H
 

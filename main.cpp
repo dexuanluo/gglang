@@ -44,6 +44,7 @@ int run(string& text){
     }else if (result->get_type() == TT_FLOAT){
         cout << result->get_dl_val()<<endl;
     }
+    gc->incinerate();
     return 0;
 
 }

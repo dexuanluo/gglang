@@ -46,8 +46,17 @@ public:
     virtual double get_dl_val(){
         return 0.0;
     }
+
+    virtual void not_tmp(){
+        tmp = 0;
+    }
+
+    virtual short int is_tmp(){
+        return tmp;
+    }
 private:
     string type;
+    short int tmp = 1;
 };
 
 class Undefined: public GG_Object{
@@ -55,14 +64,24 @@ public:
 
     Undefined(){
         type = TT_ERR;
+        tmp = 1;
     }
 
     string get_type() override{
         return type;
     }
 
+    void not_tmp() override{
+        tmp = 0;
+    }
+
+    short int is_tmp() override{
+        return tmp;
+    }
+
 private:
     string type;
+    short int tmp;
 };
 
 class Numeric: public GG_Object{
@@ -72,19 +91,23 @@ public:
         type = copy->get_type();
         dl_val = copy->get_dl_val();
         int_val = copy->get_int_val();
+        tmp = 1;
     }
 
     Numeric(double dl_val_){
+        tmp = 1;
         type = TT_FLOAT;
         dl_val = dl_val_;
     }
 
     Numeric(long int int_val_){
+        tmp = 1;
         type = TT_INT;
         int_val = int_val_;
     }
 
     Numeric(Token& token){
+        tmp = 1;
         type = token.type;
         if (token.type == TT_INT){
             try {
@@ -103,6 +126,14 @@ public:
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Floating Point Overflow at " + token.get_string_val())));
             }
         }
+    }
+
+    void not_tmp() override{
+        tmp = 0;
+    }
+
+    short int is_tmp() override{
+        return tmp;
     }
 
     long int get_int_val() override{
@@ -399,6 +430,7 @@ private:
     long int int_val;
     double dl_val;
     string type;
+    short int tmp;
 };
 
 

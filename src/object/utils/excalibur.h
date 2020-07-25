@@ -4,6 +4,11 @@
 #include "../token.h"
 #ifndef GG_LANG_ERROROBSERVER_H
 #define GG_LANG_ERROROBSERVER_H
+
+//#####################################
+//     Error Detector
+//#####################################
+
 class Error{
 public:
     string node_type;
