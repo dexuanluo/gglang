@@ -122,8 +122,11 @@ public:
     string dfs() override {
         return "(" + token.type + " ,"+ node->dfs() + ")" ;
     }
-
-
+    ~VarAssignmentNode(){
+        if (node != nullptr){
+            delete node;
+        }
+    }
 
 
 private:
