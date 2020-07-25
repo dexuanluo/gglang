@@ -71,8 +71,6 @@ int main() {
     cout << endl;
 
 
-
-
     while (true){
         cout << GG_ARROW;
         string* input_txt = new string();

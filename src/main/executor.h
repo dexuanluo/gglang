@@ -2,7 +2,8 @@
 // Created by Dexuan on 2020-07-23.
 //
 #include "parser.h"
-#include <cmath>
+#include "gg_object.h"
+#include "gg_memory.h"
 #ifndef GG_LANG_EXECUTOR_H
 #define GG_LANG_EXECUTOR_H
 using namespace std;
@@ -10,397 +11,7 @@ using namespace std;
 //    Parsed Tree Executor
 //#########################################
 
-class GG_Object{
-public:
-
-    GG_Object(){
-        type = GG_OBJECT_CLASS;
-    }
-
-    virtual GG_Object* added_to(GG_Object* other){
-        return other;
-    }
-
-    virtual GG_Object* subtracted_by(GG_Object* other){
-        return other;
-    }
-
-    virtual GG_Object* multiplied_by(GG_Object* other){
-        return other;
-    }
-
-    virtual GG_Object* divided_by(GG_Object* other){
-        return other;
-    }
-
-    virtual GG_Object* power_to(GG_Object* other){
-        return other;
-    }
-
-    virtual long int get_int_val(){
-        long int i;
-        return i;
-    }
-
-    virtual string get_type(){
-        return type;
-    }
-
-    virtual double get_dl_val(){
-        return 0.0;
-    }
-private:
-    string type;
-
-
-};
-
-class Undefined: public GG_Object{
-public:
-
-    Undefined(){
-        type = TT_ERR;
-    }
-
-    string get_type() override{
-        return type;
-    }
-
-private:
-    string type;
-};
-
-class Numeric: public GG_Object{
-public:
-
-    Numeric(double dl_val_){
-        type = TT_FLOAT;
-        dl_val = dl_val_;
-    }
-
-    Numeric(long int int_val_){
-        type = TT_INT;
-        int_val = int_val_;
-    }
-
-    Numeric(Node* node){
-        type = node->token.type;
-        if (node->token.type == TT_INT){
-            try {
-                int_val = stoi(node->token.get_string_val());
-            } catch (const std::exception& e) {
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Integer Overflow at " + node->token.get_string_val())));
-            }
-
-        }
-        if (node->token.type == TT_FLOAT){
-            try {
-                dl_val = stod(node->token.get_string_val());
-            } catch (const std::exception& e) {
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Floating Point Overflow at " + node->token.get_string_val())));
-            }
-        }
-    }
-
-    long int get_int_val() override{
-        return int_val;
-    }
-
-    double get_dl_val() override{
-        return dl_val;
-    }
-
-    string get_type() override{
-        return type;
-    }
-
-    GG_Object* added_to(GG_Object* other) override {
-
-        if (type == TT_INT && other->get_type() == TT_INT){
-
-            try{
-
-                return new Numeric(this->get_int_val() + other->get_int_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_int_val() + other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_dl_val() + other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_dl_val() + other->get_int_val());
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }
-        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '+' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
-    }
-
-    GG_Object* subtracted_by(GG_Object* other) override {
-
-        if (type == TT_INT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_int_val() - other->get_int_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_int_val() - other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_dl_val() - other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_dl_val() - other->get_int_val());
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }
-        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '-' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
-    }
-
-    GG_Object* multiplied_by(GG_Object* other) override{
-
-        if (type == TT_INT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_int_val() * other->get_int_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() << endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
-            }
-
-
-        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_int_val() * other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_dl_val() * other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_dl_val() * other->get_int_val());
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
-            }
-
-
-        }
-        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '*' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
-    }
-
-    GG_Object* divided_by(GG_Object* other) override{
-
-        if (type == TT_INT && other->get_type() == TT_INT){
-
-            try{
-                if (other->get_int_val() == 0){
-                    return new Numeric(this->get_int_val() / 0.0);
-                }
-                return new Numeric(this->get_int_val() / other->get_int_val());
-
-
-            }catch(const std::exception& e){
-                cout << e.what() << endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_int_val() / other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(this->get_dl_val() / other->get_dl_val());
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(this->get_dl_val() / other->get_int_val());
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
-            }
-
-
-        }
-        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '/' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
-    }
-
-    GG_Object* power_to(GG_Object* other) override{
-
-        if (type == TT_INT && other->get_type() == TT_INT){
-
-            try{
-
-                return new Numeric(pow(this->get_int_val(), other->get_int_val()));
-
-
-            }catch(const std::exception& e){
-                cout << e.what() << endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(pow(this->get_int_val(), other->get_dl_val()));
-
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
-
-            try{
-                return new Numeric(pow(this->get_dl_val(), other->get_dl_val()));
-
-            }catch(const std::exception& e){
-                cout << e.what() << endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
-
-            try{
-                return new Numeric(pow(this->get_dl_val(), other->get_int_val()));
-            }catch(const std::exception& e){
-                cout << e.what() <<endl;
-                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
-            }
-
-
-        }
-        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '^' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
-    }
-
-
-private:
-    long int int_val;
-    double dl_val;
-    string type;
-};
-
-
+static Cache * const root_table = new Cache();
 
 class Executor{
 
@@ -414,7 +25,7 @@ public:
     GG_Object* execute(Node* node){
 
         if (error_check->is_error()){
-            return new Numeric(0.0);
+            return new Undefined();
         }
         if (node->node_type == NUMBER_NODE){
             return visit_number_node(node);
@@ -425,14 +36,36 @@ public:
         if (node->node_type == UNARY_OP_NODE){
             return visit_unary_op_node(node);
         }
-        error_check->err_register(new RuntimeError(Token(TT_ERR, "No Execution method, execution halted")));
-        return new Numeric(0.0);
+        if (node->node_type == VARACCESS_NODE){
 
+            return visit_var_access_node(node);
+        }
+        if (node->node_type == VARASSIGNMENT_NODE){
+            return visit_var_assignment_node(node);
+        }
+
+        error_check->err_register(new RuntimeError(Token(TT_ERR, "No Execution method, execution halted")));
+        return new Undefined();
+
+    }
+
+    GG_Object* visit_var_access_node(Node* node){
+        GG_Object* res = root_table->get(node->token.get_string_val());
+        if (res->get_type() == TT_ERR){
+            error_check->err_register(new RuntimeError(Token(TT_ERR, node->token.get_string_val() + " is not defined")));
+        }
+        return res;
+    }
+
+    GG_Object* visit_var_assignment_node(Node* node){
+        GG_Object* to_assign = execute(node->node);
+        root_table->set(node->token.get_string_val(), to_assign);
+        return new Undefined();
     }
 
     GG_Object* visit_number_node(Node* node){
 
-        return new Numeric(node);
+        return new Numeric(node->token);
     }
 
     GG_Object* visit_unary_op_node(Node* node){
@@ -456,13 +89,13 @@ public:
             left = execute(node->left_node);
         }else{
             error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Left Node Of the Parsed Tree")));
-            return new Numeric(0.0);
+            return new Undefined();
         }
         if (node->right_node != nullptr){
             right = execute(node->right_node);
         }else{
             error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Right Node Of the Parsed Tree")));
-            return new Numeric(0.0);
+            return new Undefined();
         }
 
         if (node->token.type == TT_PLUS){

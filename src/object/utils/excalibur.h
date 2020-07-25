@@ -1,13 +1,14 @@
 //
 // Created by Dexuan on 2020-07-23.
 //
-#include "../node.h"
+#include "../token.h"
 #ifndef GG_LANG_ERROROBSERVER_H
 #define GG_LANG_ERROROBSERVER_H
-class Error: public Node{
+class Error{
 public:
+    string node_type;
+    Token token;
     Error(){}
-
     virtual void err_msg(){
         cout << node_type + ": " + token.get_string_val() << endl;
     }
@@ -80,7 +81,8 @@ private:
     string no_err = "No Error Found";
 };
 
-
+//Initializing Singleton Error Checker
+static Excalibur * const error_check = new Excalibur();
 
 
 

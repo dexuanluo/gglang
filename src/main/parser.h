@@ -59,78 +59,99 @@ public:
                 }
                 next();
                 return res;
+            }else if (cur->type == TT_IDENTIFIER){
+                res = new VarAccessNode(*cur);
+                next();
+                return res;
             }
         }
 
-        error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
+
         return res;
     }
 
     Node *power(){
         skip_WS();
-        Node* left = atom();
-        if (cur != tokens.end() && cur->type == TT_POW){
+        Node* res = atom();
+        if (cur != tokens.end() && res != nullptr && cur->type == TT_POW){
             Token token = *cur;
             next();
-            Node* right = atom();
-            return new BinOpNode(left, token, right);
+            return new BinOpNode(res, token, atom());
         }
 
-        return left;
+        return res;
     }
 
     Node *factor() {
         skip_WS();
-        Node* res = nullptr;
-        if (cur != tokens.end()) {
-            if(cur->type == TT_INT || cur->type == TT_FLOAT){
-                res = power();
-                return res;
-            }else if (cur->type == TT_PLUS || cur->type == TT_MINUS) {
+        Node* res = power();
+        if (cur != tokens.end() && res == nullptr && (cur->type == TT_PLUS || cur->type == TT_MINUS)) {
                 Token token = *cur;
                 next();
                 res = new UnaryOpNode(token, power());
                 return res;
-            }
         }
-        error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
+
         return res;
     }
 
     Node *term() {
-        Node *left = factor();
-        Node *right = nullptr;
-        while (cur != tokens.end() &&
-               (cur->type == TT_MUL || cur->type == TT_DIV ||\
-               cur->type == TT_WS || cur->type == TT_ESCAPE)) {
-            if (cur->type == TT_WS || cur->type == TT_ESCAPE) {
-                next();
-            } else {
-                Token token = *cur;
-                next();
-                right = factor();
-                left = new BinOpNode(left, token, right);
-            }
-
+        Node *res = factor();
+        skip_WS();
+        if (cur != tokens.end() && (cur->type == TT_MUL || cur->type == TT_DIV) ){
+            Token token = *cur;
+            next();
+            res = new BinOpNode(res, token, factor());
         }
-        return left;
+
+
+        return res;
     }
 
     Node *expression() {
-        Node *left = term();
-        Node *right = nullptr;
-        while (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS || \
-                cur->type == TT_WS || cur->type == TT_ESCAPE)) {
-            if (cur->type == TT_WS || cur->type == TT_ESCAPE) {
-                next();
-            } else {
+        Node *res = term();
+        skip_WS();
+
+        if (cur != tokens.end() && cur->type == TT_KEYWORD && cur->get_string_val() == VAR){
+            next();
+            skip_WS();
+            if (cur != tokens.end() && cur->type == TT_IDENTIFIER){
                 Token token = *cur;
                 next();
-                right = term();
-                left = new BinOpNode(left, token, right);
+                skip_WS();
+                if (cur != tokens.end() && cur->type == TT_EQUAL){
+                    next();
+                    skip_WS();
+                    Node* expr = expression();
+                    if (expr->node_type == NUMBER_NODE){
+                        return new VarAssignmentNode(token, expr);
+                    }
+                    error_check->err_register(new ParserError(Token(TT_ERR, "Expecting a number to be assigned ")));
+                }else{
+                    error_check->err_register(new ParserError(Token(TT_ERR, "Expecting = ")));
+                }
+            }else{
+                error_check->err_register(new ParserError(Token(TT_ERR, "Expecting an IDENTIFIER ")));
             }
         }
-        return left;
+
+
+
+
+        if (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS) ){
+            Token token = *cur;
+            next();
+            res = new BinOpNode(res, token, term());
+        }
+
+
+        if (res == nullptr){
+            if (!error_check->is_error()){
+                error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
+            }
+        }
+
+        return res;
     }
 
     void skip_WS(){

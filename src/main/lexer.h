@@ -15,9 +15,6 @@ using namespace std;
 //  Lexer
 //########################
 
-//Initializing Singleton Error Checker
-static Excalibur * const error_check = new Excalibur();
-
 
 class Lexer{
 public:
@@ -40,11 +37,12 @@ public:
         }else{
             cur_char = ENDOFTXT;
         }
+
     }
 
-    bool is_digit(string& cur, const string& digits){
-        for (int i = 0; i < digits.size(); ++i){
-            if (cur[0] - digits[i] == 0) {
+    bool is_digit(string& cur){
+        for (int i = 0; i < DIGITS.size(); ++i){
+            if (cur[0] - DIGITS[i] == 0) {
                 return true;
             }
         }
@@ -54,7 +52,7 @@ public:
     Token number_maker(){
         string tmp;
         int dot_count = 0;
-        bool isdigit = is_digit(cur_char, DIGITS);
+        bool isdigit = is_digit(cur_char);
         while (cur_char != ENDOFTXT && (isdigit || cur_char == ESCAPE || cur_char == DOT)){
             if(cur_char == DOT){
                 if(dot_count == 1){break;}
@@ -64,7 +62,7 @@ public:
                 tmp += cur_char;
             }
             next();
-            isdigit = is_digit(cur_char, DIGITS);
+            isdigit = is_digit(cur_char);
         }
 
         if (dot_count == 1){return Token(TT_FLOAT, tmp);}
@@ -96,7 +94,7 @@ public:
     }
 
     short int handle_DIGIT(vector<Token>* tokens){
-        if(is_digit(cur_char, DIGITS)){
+        if(is_digit(cur_char)){
             if (ws_count != 0){
                 ws_count = 0;
             }
@@ -197,6 +195,37 @@ public:
         return 0;
     }
 
+    short int handle_EQUAL(vector<Token>* tokens){
+        if(cur_char == EQUAL){
+            tokens->push_back(Token(TT_EQUAL));
+            if (ws_count != 0){
+                ws_count = 0;
+            }
+            next();
+            return 1;
+        }
+        return 0;
+    }
+
+    short int handle_LETTER(vector<Token>* tokens){
+        if (LETTER.find(cur_char[0]) != LETTER.end() || cur_char == UNDERSCORE){
+            string res = cur_char;
+            next();
+            while (pos < text.size() && (LETTER.find(cur_char[0]) != LETTER.end() || cur_char == UNDERSCORE || is_digit(cur_char))){
+                res += cur_char;
+                next();
+            }
+            if (KEYWORD.find(res) !=  KEYWORD.end()){
+                tokens->push_back(Token(TT_KEYWORD, res));
+            }else{
+                tokens->push_back(Token(TT_IDENTIFIER, res));
+            }
+
+            return 1;
+        }
+        return 0;
+    }
+
     vector<Token>* token_maker(){
         vector<Token>* tokens = new vector<Token>();
 
@@ -205,6 +234,8 @@ public:
             if (handle_WS(tokens)){
 
             }else if(handle_ESCAPE(tokens)){
+
+            }else if(handle_LETTER(tokens)){
 
             }else if(handle_DIGIT(tokens)){
 
@@ -221,6 +252,8 @@ public:
             }else if(handle_LPAREN(tokens)){
 
             }else if(handle_RPAREN(tokens)){
+
+            }else if(handle_EQUAL(tokens)){
 
             }else if(error_check->is_error()){
                 delete tokens;

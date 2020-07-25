@@ -65,19 +65,20 @@ The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `
 ## Element Priority From Low to High
 
 #### expr: <br/>
-        term((PLUS|MINUS) term)*
+        KEYWORD:var IDENTIFIER EQUAL expr
+        term((PLUS|MINUS)term)*
 
 #### term: <br/>
-        factor((MUL | DIV)factor)*
+        factor((MUL|DIV)factor)*
 
 #### factor: <br/>
         (PLUS|MINUS) power
         power
 
 #### power: <br/>
-        atom (POW factor)*
+        atom(POW factor)*
            
 #### atom: <br/>
-        INT | FLOAT
+        INT|FLOAT|IDENTIFIER
         LPAREN expr RPAREN
         

@@ -1,9 +1,14 @@
 //
 // Created by Dexuan on 2020-07-23.
 //
+
 #include "token.h"
 #ifndef GG_LANG_NODE_H
 #define GG_LANG_NODE_H
+
+//#########################
+//  Abstract Syntax Tree
+//########################
 
 class Node{
 public:
@@ -12,7 +17,6 @@ public:
     Node* right_node;
     Node* node;
     string node_type;
-
     Node(){}
 
     Node(Token token_){
@@ -24,6 +28,8 @@ public:
     virtual string dfs(){
         return token.type +": " + token.get_string_val();
     }
+
+
 };
 
 class NumberNode: public Node{
@@ -55,6 +61,7 @@ public:
     };
 
     ~BinOpNode(){
+
         if (left_node != nullptr){
             delete left_node;
             left_node = nullptr;
@@ -65,7 +72,7 @@ public:
         }
     }
 
-    string dfs(){
+    string dfs() override {
         string left;
         string right;
         if (left_node != nullptr){
@@ -99,10 +106,44 @@ public:
         }
     }
 
-    string dfs(){
+    string dfs() override {
         return "(" + token.type + " ,"+ node->dfs() + ")" ;
     }
 };
 
+class VarAssignmentNode: public Node{
+public:
+    VarAssignmentNode(Token token_, Node* val_){
+        node_type = VARASSIGNMENT_NODE;
+        token = token_;
+        node = val_;
+    }
+    string dfs() override {
+        return "(" + token.type + " ,"+ node->dfs() + ")" ;
+    }
+
+
+
+
+private:
+    string type;
+
+    
+};
+
+class VarAccessNode: public Node{
+public:
+
+    VarAccessNode(Token token_){
+        node_type = VARACCESS_NODE;
+        token = token_;
+    }
+
+    string dfs() override {
+        return "(" + token.type + " ," + token.get_string_val() + ")" ;
+    }
+
+
+};
 
 #endif //GG_LANG_NODE_H

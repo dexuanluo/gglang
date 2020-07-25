@@ -15,4 +15,4 @@ add_executable(gg_lang
         src/object/utils/excalibur.h
         src/object/node.h
         src/object/token.h
-        main.cpp)
+        main.cpp src/object/gg_object.h src/object/utils/gg_memory.h)
