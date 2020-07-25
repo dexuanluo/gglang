@@ -1,13 +1,21 @@
 # Supported Grammar
 _Author: Dexuan Luo_
 
+## Variable Assignment<br/>
+        gg >> var a = 10
+        gg >> a
+        10
 ## Arithmetic Operation
 The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `c++`, `FLOAT` is `double` in `c++`.
 #### Addition and Subtraction: <br/>
-        gg >> 1 + 2       // Integer Addition
+        gg >> var a = 1
+        
+        gg >> var b = 2
+        
+        gg >> a + b       // Integer Addition
         3
         
-        gg >> 1 - 2       // Integer Subtraction 
+        gg >> a - b       // Integer Subtraction 
         -1
         
         gg >> 1.5 + 4.2   // Floating Point Addition
@@ -65,7 +73,7 @@ The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `
 ## Element Priority From Low to High
 
 #### expr: <br/>
-        KEYWORD:var IDENTIFIER EQUAL expr
+        KEYWORD:var IDENTIFIER EQUAL expr    //variable assignment
         term((PLUS|MINUS)term)*
 
 #### term: <br/>
