@@ -3,7 +3,7 @@
 //
 
 #include "token.h"
-
+#include <memory>
 #ifndef GG_LANG_NODE_H
 #define GG_LANG_NODE_H
 
@@ -30,7 +30,6 @@ public:
         return token.type +": " + token.get_string_val();
     }
 
-
 };
 
 class NumberNode: public Node{
@@ -44,6 +43,7 @@ public:
         node_type = NUMBER_NODE;
         token = token_;
     }
+
 };
 
 class BinOpNode: public Node{
@@ -119,6 +119,7 @@ public:
         token = token_;
         node = val_;
     }
+
     string dfs() override {
         return "(" + token.type + " ,"+ node->dfs() + ")" ;
     }
@@ -129,8 +130,6 @@ public:
     }
 
 
-private:
-    string type;
 
     
 };
@@ -148,6 +147,42 @@ public:
     }
 
 
+};
+
+class NoOpNode: public Node{
+public:
+
+    NoOpNode(Node* left, Token token_, Node* right){
+        node_type =NO_OP_NODE;
+        left_node = left;
+        right_node= right;
+        token = token_;
+
+    }
+
+    ~NoOpNode(){
+
+        if (left_node != nullptr){
+            delete left_node;
+            left_node = nullptr;
+        }
+        if (right_node != nullptr){
+            delete right_node;
+            right_node = nullptr;
+        }
+    }
+
+    string dfs() override {
+        string left;
+        string right;
+        if (left_node != nullptr){
+            left = left_node->dfs();
+        }
+        if (right_node != nullptr){
+            right = right_node->dfs();
+        }
+        return "(" + left + "," + token.type + " ,"+ right + ")" ;
+    }
 };
 
 #endif //GG_LANG_NODE_H

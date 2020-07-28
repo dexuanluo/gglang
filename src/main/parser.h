@@ -32,8 +32,9 @@ public:
     }
 
     Node *parse() {
-        Node *res = expression();
+        Node *res = scope();
         if (cur != tokens.end()){
+
             delete res;
             res = nullptr;
             error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
@@ -111,7 +112,6 @@ public:
     Node *expression() {
         Node *res = term();
         skip_WS();
-
         if (cur != tokens.end() && cur->type == TT_KEYWORD && cur->get_string_val() == VAR){
             next();
             skip_WS();
@@ -124,9 +124,10 @@ public:
                     skip_WS();
                     Node* expr = expression();
 
-                    if (expr != nullptr){
-                        return new VarAssignmentNode(token, expr);
-                    }
+                        if (expr != nullptr){
+                            return new VarAssignmentNode(token, expr);
+                        }
+
                     error_check->err_register(new ParserError(Token(TT_ERR, "Expecting a number to be assigned ")));
                 }else{
                     error_check->err_register(new ParserError(Token(TT_ERR, "Expecting = ")));
@@ -140,14 +141,16 @@ public:
 
 
         if (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS) ){
+
             Token token = *cur;
             next();
-            res = new BinOpNode(res, token, term());
+            res = new BinOpNode(res, token, expression());
         }
 
 
-        if (res == nullptr){
+        if (res == nullptr && cur != tokens.end()){
             if (!error_check->is_error()){
+
                 error_check->err_register(new ParserError(Token(TT_ERR, "Unexpected Token: " + cur->type)));
             }
         }
@@ -155,6 +158,26 @@ public:
         return res;
     }
 
+    Node * scope(){
+        Node* left = expression();
+        skip_WS();
+
+        if (cur != tokens.end()){
+            if (cur->type != TT_SEMICOL){
+                error_check->err_register(new ParserError(Token(TT_ERR, "Expecting ';' ")));
+                return left;
+
+            }else {
+                Token token = *cur;
+                next();
+                skip_WS();
+                return new NoOpNode(left, token, scope());
+            }
+        }
+        return new NoOpNode(left, Token(ENDOFTXT), nullptr);
+
+
+    }
     void skip_WS(){
         while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
             next();

@@ -4,6 +4,7 @@
 #include "token.h"
 #include <unordered_map>
 #include <cmath>
+#include <memory>
 #ifndef GG_LANG_GG_OBJECT_H
 #define GG_LANG_GG_OBJECT_H
 
@@ -14,23 +15,23 @@ public:
         type = GG_OBJECT_CLASS;
     }
 
-    virtual GG_Object* added_to(GG_Object* other){
+    virtual shared_ptr<GG_Object> added_to(shared_ptr<GG_Object> other){
         return other;
     }
 
-    virtual GG_Object* subtracted_by(GG_Object* other){
+    virtual shared_ptr<GG_Object> subtracted_by(shared_ptr<GG_Object> other){
         return other;
     }
 
-    virtual GG_Object* multiplied_by(GG_Object* other){
+    virtual shared_ptr<GG_Object> multiplied_by(shared_ptr<GG_Object> other){
         return other;
     }
 
-    virtual GG_Object* divided_by(GG_Object* other){
+    virtual shared_ptr<GG_Object> divided_by(shared_ptr<GG_Object> other){
         return other;
     }
 
-    virtual GG_Object* power_to(GG_Object* other){
+    virtual shared_ptr<GG_Object> power_to(shared_ptr<GG_Object> other){
         return other;
     }
 
@@ -87,7 +88,7 @@ private:
 class Numeric: public GG_Object{
 public:
 
-    Numeric(GG_Object* copy){
+    Numeric(shared_ptr<GG_Object> copy){
         type = copy->get_type();
         dl_val = copy->get_dl_val();
         int_val = copy->get_int_val();
@@ -148,281 +149,281 @@ public:
         return type;
     }
 
-    GG_Object* added_to(GG_Object* other) override {
+    shared_ptr<GG_Object> added_to(shared_ptr<GG_Object> other) override {
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
-
-                return new Numeric(this->get_int_val() + other->get_int_val());
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(this->get_int_val() + other->get_int_val()));
+                return res;
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_INT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_int_val() + other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() + other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_dl_val() + other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() + other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_dl_val() + other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() + other->get_int_val()));
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Addition Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '+' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
+        return make_shared<Undefined>(Undefined());
     }
 
-    GG_Object* subtracted_by(GG_Object* other) override {
+    shared_ptr<GG_Object> subtracted_by(shared_ptr<GG_Object> other) override {
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_int_val() - other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() - other->get_int_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_INT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_int_val() - other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() - other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_dl_val() - other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() - other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_dl_val() - other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() - other->get_int_val()));
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Subtraction Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '-' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
+        return make_shared<Undefined>(Undefined());
     }
 
-    GG_Object* multiplied_by(GG_Object* other) override{
+    shared_ptr<GG_Object> multiplied_by(shared_ptr<GG_Object> other) override{
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_int_val() * other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() * other->get_int_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_INT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_int_val() * other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() * other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_dl_val() * other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() * other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_dl_val() * other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() * other->get_int_val()));
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Multiplication Caused Overflow")));
-                return new Numeric(0.0);
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '*' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
+        return make_shared<Undefined>(Undefined());
     }
 
-    GG_Object* divided_by(GG_Object* other) override{
+    shared_ptr<GG_Object> divided_by(shared_ptr<GG_Object> other) override{
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
                 if (other->get_int_val() == 0){
-                    return new Numeric(this->get_int_val() / 0.0);
+                    return make_shared<Numeric>(Numeric(this->get_int_val() / 0.0));
                 }
-                return new Numeric(this->get_int_val() / other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() / other->get_int_val()));
 
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_INT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_int_val() / other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_int_val() / other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(this->get_dl_val() / other->get_dl_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() / other->get_dl_val()));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(this->get_dl_val() / other->get_int_val());
+                return make_shared<Numeric>(Numeric(this->get_dl_val() / other->get_int_val()));
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Division by 0 or Number Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '/' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
+        return make_shared<Undefined>(Undefined());
     }
 
-    GG_Object* power_to(GG_Object* other) override{
+    shared_ptr<GG_Object> power_to(shared_ptr<GG_Object> other) override{
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
 
-                return new Numeric(pow(this->get_int_val(), other->get_int_val()));
+                return make_shared<Numeric>(Numeric(pow(this->get_int_val(), other->get_int_val())));
 
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_INT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(pow(this->get_int_val(), other->get_dl_val()));
+                return make_shared<Numeric>(Numeric(pow(this->get_int_val(), other->get_dl_val())));
 
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
 
             try{
-                return new Numeric(pow(this->get_dl_val(), other->get_dl_val()));
+                return make_shared<Numeric>(Numeric(pow(this->get_dl_val(), other->get_dl_val())));
 
             }catch(const std::exception& e){
                 cout << e.what() << endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }else if (type == TT_FLOAT && other->get_type() == TT_INT){
 
             try{
-                return new Numeric(pow(this->get_dl_val(), other->get_int_val()));
+                return make_shared<Numeric>(Numeric(pow(this->get_dl_val(), other->get_int_val())));
             }catch(const std::exception& e){
                 cout << e.what() <<endl;
                 error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Power Caused Overflow")));
-                return new Undefined();
+                return make_shared<Undefined>(Undefined());
             }
 
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '^' operation between " + get_type() + " and " + other->get_type())));
-        return new Undefined();
+        return make_shared<Undefined>(Undefined());
     }
 
 

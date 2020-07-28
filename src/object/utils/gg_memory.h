@@ -13,48 +13,90 @@ public:
     }
 
     Cache(Cache* parent_){
-        unordered_map<string, GG_Object*> table;
+        unordered_map<string, shared_ptr<GG_Object>> table;
         parent = parent_;
+        is_root = false;
     }
 
-    GG_Object* get(string key){
-        auto iter = table.find(key);
-        if ( iter != table.end()){
-            if (iter->second->get_type() == TT_INT || iter->second->get_type() == TT_FLOAT){
+    // A way to initialize the table root table to store runtime variable
+    Cache(string set_as_root){
+
+        long int t = 1;
+        long int f = 0;
+
+        table["null"] = make_shared<Undefined>(Undefined());
+        table["null"]->not_tmp();
+        table["true"] = make_shared<Numeric>(Numeric(t));
+        table["true"]->not_tmp();
+        table["false"] = make_shared<Numeric>(Numeric(f));
+        table["false"]->not_tmp();
+        is_root = true;
+    }
+
+    bool is_root_table(){
+        return is_root;
+    }
+
+    shared_ptr<GG_Object> get(string key){
+        if (!is_root_table()){
+            auto iter = table.find(key);
+            if ( iter != table.end()) {
                 return iter->second;
+            }else if(parent != nullptr){
+                return parent->get(key);
             }
-            return new Undefined();
-        }else if(parent != nullptr){
-            return parent->get(key);
+            return parent->get(NULLVAR);
         }
-        return new Undefined();
+        auto iter = table.find(key);
+        if ( iter != table.end()) {
+            return iter->second;
+        }
+        return table[NULLVAR];
+
     }
 
-    void set(string key, GG_Object* val){
-        try{
-            table[key] = val;
-        }catch(std::exception& e){
-            cout << e.what() <<endl;
-            error_check->err_register(new RuntimeError(Token(TT_ERR, "Unknown: Failed to Change Variable Value")));
+    void set(string key, shared_ptr<GG_Object> val){
+        if (RUNTIMEVAR.find(key) != RUNTIMEVAR.end()){
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "You cannot modify a runtime variable")));
+            return;
         }
+        if (!is_root_table()){
+            try{
+                table[key] = val;
+                return;
+            }catch(std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(TT_ERR, "Unknown: Failed to Change Variable Value")));
+                return;
+            }
+
+        }
+        error_check->err_register(new RuntimeError(Token(TT_ERR, "You cannot modify a runtime variable")));
+        return;
+
 
     }
 
     bool del(string key){
-        auto iter = table.find(key);
-        if ( iter != table.end()){
-            delete iter->second;
-            iter->second = nullptr;
-            table.erase(iter);
-            return true;
+        if (!is_root_table()){
+            auto iter = table.find(key);
+            if ( iter != table.end()){
+                table.erase(iter);
+                return true;
+            }
+            if (parent != nullptr){
+                return parent->del(key);
+            }
+
         }
-        error_check->err_register(new RuntimeError(Token(TT_ERR, key + " is not defined")));
+        error_check->err_register(new RuntimeError(Token(TT_ERR, key + " is not defined or the variable you are trying to delete is a constant runtime variable")));
         return false;
     }
 
 private:
-    unordered_map<string, GG_Object*> table;
+    unordered_map<string, shared_ptr<GG_Object>> table;
     Cache* parent;
+    bool is_root;
 
 };
 #endif //GG_LANG_GG_MEMORY_H

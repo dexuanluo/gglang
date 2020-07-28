@@ -20,6 +20,7 @@ static const string & TT_MINUS = *new const string("MINUS");
 static const string & TT_MUL = *new const string("MUL");
 static const string & TT_DIV = *new const string("DIV");
 static const string & TT_POW = *new const string("POW");
+static const string & TT_SEMICOL = *new const string("SEMICOL");
 static const string & TT_LPAREN = *new const string("LPAREN");
 static const string & TT_RPAREN = *new const string("RPAREN");
 static const string & TT_ESCAPE = *new const string("ESCAPE");
@@ -36,6 +37,7 @@ static const string & OP_MINUS = *new const string("-");
 static const string & OP_MUL = *new const string("*");
 static const string & OP_DIV = *new const string("/");
 static const string & OP_POW = *new const string("^");
+static const string & OP_SEMICOL = *new const string(";");
 static const string & LPAREN = *new const string("(");
 static const string & RPAREN = *new const string(")");
 static const string & WS_NEWLINE = *new const string("\n");
@@ -46,6 +48,9 @@ static const string & DOT = *new const string(".");
 static const string & UNDERSCORE = *new const string("_");
 static const string & EQUAL = *new const string("=");
 static const string & VAR = *new const string("var");
+static const string & NULLVAR = *new const string("null");
+static const string & TRUE = *new const string("true");
+static const string & FALSE = *new const string("false");
 static const unordered_set<char> & LETTER = *new const unordered_set<char>({'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',\
                                                                                     'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',\
                                                                                     'S', 'T', 'U', 'V','W', 'X', 'Y','Z', 'a', 'b',\
@@ -53,6 +58,7 @@ static const unordered_set<char> & LETTER = *new const unordered_set<char>({'A',
                                                                                     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' ,'w',\
                                                                                     'x', 'y', 'z'});
 static const unordered_set<string> & KEYWORD = *new const unordered_set<string>({"var", "gg"});
+static const unordered_set<string> & RUNTIMEVAR = *new const unordered_set<string>({"null", "true", "false"});
 //###################################
 //     Operation Type
 //###################################
@@ -61,6 +67,7 @@ static const string & BINARY_OP_NODE = *new const string("BINARY_OP_NODE");
 static const string & UNARY_OP_NODE = *new const string("UNARY_OP_NODE");
 static const string & VARASSIGNMENT_NODE = *new const string("VARASSIGNMENT_NODE");
 static const string & VARACCESS_NODE = *new const string("VARACCESS_NODE");
+static const string & NO_OP_NODE = *new const string("NO_OP_NODE");
 //###################################
 //     Error Type
 //###################################

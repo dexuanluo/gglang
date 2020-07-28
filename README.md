@@ -2,9 +2,16 @@
 _Author: Dexuan Luo_
 
 ## Variable Assignment<br/>
-        gg >> var a = 10
+        gg >> var a = 10;
         gg >> a
         10
+        
+## Logical Operator<br/>
+        gg >> true
+        1
+        gg >> false
+        0
+        
 ## Arithmetic Operation
 The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `c++`, `FLOAT` is `double` in `c++`.
 #### Addition and Subtraction: <br/>
@@ -72,9 +79,13 @@ The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `
         
 ## Element Priority From Low to High
 
+
+#### scope: <br/>
+        expr | expr SEMICOL scope*
+
 #### expr: <br/>
         KEYWORD:var IDENTIFIER EQUAL expr    //variable assignment
-        term((PLUS|MINUS)term)*
+        term((PLUS|MINUS)expr)*
 
 #### term: <br/>
         factor((MUL|DIV)factor)*

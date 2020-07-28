@@ -17,6 +17,8 @@ const string GG_ARROW("gg >>");
 
 
 int run(string& text){
+
+    if (text.size() == 0){return 0;}
     Lexer lexer(text);
     vector<Token>* tokens = lexer.token_maker();
     if (error_check->is_error()){
@@ -32,24 +34,23 @@ int run(string& text){
     }
     cout << syntax_tree->dfs() << endl;
     Executor executor(syntax_tree);
-    GG_Object* result = executor.execute(executor.root);
+    auto result = executor.execute(executor.root);
     delete syntax_tree;
     if (error_check->is_error()){
         error_check->display_msg();
         return -1;
     }
-
-    if (result->get_type()== TT_INT){
+    cout << result->get_type()<<endl;
+    if (result->get_type() == TT_INT){
         cout << result->get_int_val()<<endl;
     }else if (result->get_type() == TT_FLOAT){
         cout << result->get_dl_val()<<endl;
     }
-    gc->incinerate();
+//    gc->incinerate();
     return 0;
-
 }
 
-int main() {
+int main(int argc, char** argv) {
 
     cout << "gg_lang ver 1.0"<< endl;
     cout << "Author: Dexuan Luo"<< endl;
@@ -72,14 +73,18 @@ int main() {
     cout << endl;
 
 
+
+
     while (true){
         cout << GG_ARROW;
         string* input_txt = new string();
         string* tmp = new string(ESCAPE);
-        while (tmp->size() > 0 && string({(*tmp)[tmp->size() - 1]}) == ESCAPE){
+        while (tmp->size() > 0 && (string({tmp->back()}) == ESCAPE)){
             getline(cin, (*tmp));
             (*input_txt) += (*tmp);
         }
+        cin.clear();
+
 
         if ((*input_txt) == GG){
             cout << "Bye" << endl;

@@ -147,6 +147,18 @@ public:
         return 0;
     }
 
+    short int handle_OP_SEMICOL(vector<Token>* tokens){
+        if(cur_char == OP_SEMICOL){
+            tokens->push_back(Token(TT_SEMICOL));
+            if (ws_count != 0){
+                ws_count = 0;
+            }
+            next();
+            return 1;
+        }
+        return 0;
+    }
+
     short int  handle_OP_DIV(vector<Token>* tokens){
         if(cur_char == OP_DIV){
             tokens->push_back(Token(TT_DIV));
@@ -254,6 +266,8 @@ public:
             }else if(handle_RPAREN(tokens)){
 
             }else if(handle_EQUAL(tokens)){
+
+            }else if(handle_OP_SEMICOL(tokens)){
 
             }else if(error_check->is_error()){
                 delete tokens;
