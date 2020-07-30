@@ -11,13 +11,27 @@ _Author: Dexuan Luo_
         1
         gg >> false
         0
+        gg >> var a = true; var b = false;
+        
+        gg >> a == b;
+        0
+        
+        gg >> a >= b;
+        1
+        
+        gg >> a <= b;
+        0
+        
+        gg >> a > b;
+        1
+        
+        gg >> a < b;
+        0
         
 ## Arithmetic Operation
 The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `c++`, `FLOAT` is `double` in `c++`.
 #### Addition and Subtraction: <br/>
-        gg >> var a = 1
-        
-        gg >> var b = 2
+        gg >> var a = 1; var b = 2
         
         gg >> a + b       // Integer Addition
         3

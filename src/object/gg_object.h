@@ -17,23 +17,43 @@ public:
 
     virtual shared_ptr<GG_Object> added_to(shared_ptr<GG_Object> other){
         return other;
-    }
+    };
 
     virtual shared_ptr<GG_Object> subtracted_by(shared_ptr<GG_Object> other){
         return other;
-    }
+    };
 
     virtual shared_ptr<GG_Object> multiplied_by(shared_ptr<GG_Object> other){
         return other;
-    }
+    };
 
     virtual shared_ptr<GG_Object> divided_by(shared_ptr<GG_Object> other){
         return other;
-    }
+    };
 
     virtual shared_ptr<GG_Object> power_to(shared_ptr<GG_Object> other){
         return other;
-    }
+    };
+
+    virtual shared_ptr<GG_Object> equal_to(shared_ptr<GG_Object> other){
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> greater_than(shared_ptr<GG_Object> other){
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> greater_than_or_equal_to(shared_ptr<GG_Object> other){
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> less_than(shared_ptr<GG_Object> other){
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> less_than_or_equal_to(shared_ptr<GG_Object> other){
+        return other;
+    };
 
     virtual long int get_int_val(){
         long int i;
@@ -51,7 +71,7 @@ public:
     virtual void not_tmp(){
         tmp = 0;
     }
-
+// this method was used by gc and may be deprecated
     virtual short int is_tmp(){
         return tmp;
     }
@@ -425,6 +445,297 @@ public:
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '^' operation between " + get_type() + " and " + other->get_type())));
         return make_shared<Undefined>(Undefined());
     }
+
+    shared_ptr<GG_Object> equal_to(shared_ptr<GG_Object> other){
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() == other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() == other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() == other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() == other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '==' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> greater_than(shared_ptr<GG_Object> other){
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() > other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() > other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() > other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() > other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '>' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> greater_than_or_equal_to(shared_ptr<GG_Object> other){
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() >= other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() >= other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() >= other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() >= other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '>=' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> less_than(shared_ptr<GG_Object> other){
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() < other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() < other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() < other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() < other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '<' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> less_than_or_equal_to(shared_ptr<GG_Object> other){
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() <= other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() <= other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() <= other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() <= other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '<=' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
 
 
 private:

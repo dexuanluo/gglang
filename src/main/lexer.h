@@ -209,11 +209,53 @@ public:
 
     short int handle_EQUAL(vector<Token>* tokens){
         if(cur_char == EQUAL){
-            tokens->push_back(Token(TT_EQUAL));
+            next();
+            if (cur_char == EQUAL){
+                tokens->push_back(Token(TT_EE));
+                next();
+            }else{
+                tokens->push_back(Token(TT_EQUAL));
+            }
+
             if (ws_count != 0){
                 ws_count = 0;
             }
+            return 1;
+        }
+        return 0;
+    }
+
+    short int handle_GREATER(vector<Token>* tokens){
+        if(cur_char == GREATER){
             next();
+            if (cur_char == EQUAL){
+                tokens->push_back(Token(TT_GE));
+                next();
+            }else{
+                tokens->push_back(Token(TT_GREATER));
+            }
+
+            if (ws_count != 0){
+                ws_count = 0;
+            }
+            return 1;
+        }
+        return 0;
+    }
+
+    short int handle_LESS(vector<Token>* tokens){
+        if(cur_char == LESS){
+            next();
+            if (cur_char == EQUAL){
+                tokens->push_back(Token(TT_LE));
+                next();
+            }else{
+                tokens->push_back(Token(TT_LESS));
+            }
+
+            if (ws_count != 0){
+                ws_count = 0;
+            }
             return 1;
         }
         return 0;
@@ -266,6 +308,10 @@ public:
             }else if(handle_RPAREN(tokens)){
 
             }else if(handle_EQUAL(tokens)){
+
+            }else if(handle_GREATER(tokens)){
+
+            }else if(handle_LESS(tokens)){
 
             }else if(handle_OP_SEMICOL(tokens)){
 

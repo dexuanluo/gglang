@@ -28,6 +28,11 @@ static const string & TT_IDENTIFIER = *new const string("IDENTIFIER");
 static const string & TT_KEYWORD = *new const string("KEYWORD");
 static const string & TT_EQUAL = *new const string("EQUAL");
 static const string & TT_WS = *new const string("WS");
+static const string & TT_EE = *new const string("EQUALEQUAL");
+static const string & TT_GE = *new const string("GREATEREQUAL");
+static const string & TT_LE = *new const string("LESSEQUAL");
+static const string & TT_GREATER = *new const string("GREATER");
+static const string & TT_LESS = *new const string("LESS");
 static const string & ENDOFTXT = *new const string("EOT");
 //###################################
 //        Recognized Syntax
@@ -47,6 +52,8 @@ static const string & WS_SPACE = *new const string(" ");
 static const string & DOT = *new const string(".");
 static const string & UNDERSCORE = *new const string("_");
 static const string & EQUAL = *new const string("=");
+static const string & LESS = *new const string("<");
+static const string & GREATER = *new const string(">");
 static const string & VAR = *new const string("var");
 static const string & NULLVAR = *new const string("null");
 static const string & TRUE = *new const string("true");
@@ -68,6 +75,7 @@ static const string & UNARY_OP_NODE = *new const string("UNARY_OP_NODE");
 static const string & VARASSIGNMENT_NODE = *new const string("VARASSIGNMENT_NODE");
 static const string & VARACCESS_NODE = *new const string("VARACCESS_NODE");
 static const string & NO_OP_NODE = *new const string("NO_OP_NODE");
+static const string & COMPARISION_NODE = *new const string("COMPARISION_NODE");
 //###################################
 //     Error Type
 //###################################

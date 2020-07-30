@@ -149,6 +149,45 @@ public:
 
 };
 
+class ComparisionNode: public Node{
+public:
+    ComparisionNode(){
+        node_type = COMPARISION_NODE;
+    }
+
+    ComparisionNode(Node* left, Token token_, Node* right){
+        left_node = left;
+        token = token_;
+        right_node = right;
+        node_type = COMPARISION_NODE;
+    };
+
+    ~ComparisionNode(){
+
+        if (left_node != nullptr){
+            delete left_node;
+            left_node = nullptr;
+        }
+        if (right_node != nullptr){
+            delete right_node;
+            right_node = nullptr;
+        }
+    }
+
+    string dfs() override {
+        string left;
+        string right;
+        if (left_node != nullptr){
+            left = left_node->dfs();
+        }
+        if (right_node != nullptr){
+            right = right_node->dfs();
+        }
+        return LPAREN + left + ", " + token.type + ", " + right + RPAREN;
+    }
+};
+
+
 class NoOpNode: public Node{
 public:
 

@@ -4,7 +4,7 @@
 #include "parser.h"
 #include "gg_object.h"
 #include "gg_memory.h"
-#include "../utils/avalon.h"
+//#include "../utils/avalon.h"
 #ifndef GG_LANG_EXECUTOR_H
 #define GG_LANG_EXECUTOR_H
 using namespace std;
@@ -12,9 +12,10 @@ using namespace std;
 //    Parsed Tree Executor
 //#########################################
 
-// A global table that store runtime variable like true, false and null.
+// A global table that stores runtime variables like true, false and null.
 static Cache * const root_table = new Cache("set_as_root");
 
+// A global table that stores user defined global variables. It has less priority than the root table
 static Cache * const main_table = new Cache(root_table);
 
 class Executor{
@@ -26,6 +27,7 @@ public:
         root = root_;
     }
 
+    //routing the visiting method by node types
     shared_ptr<GG_Object> execute(Node* node){
         if (node == nullptr){
             return root_table->get(NULLVAR);
@@ -44,11 +46,13 @@ public:
             return visit_unary_op_node(node);
         }
         if (node->node_type == VARACCESS_NODE){
-
             return visit_var_access_node(node);
         }
         if (node->node_type == VARASSIGNMENT_NODE){
             return visit_var_assignment_node(node);
+        }
+        if (node->node_type == COMPARISION_NODE){
+            return visit_comparision_node(node);
         }
         if (node->node_type == NO_OP_NODE){
             return visit_no_op_node(node);
@@ -56,6 +60,41 @@ public:
         error_check->err_register(new RuntimeError(Token(TT_ERR, "No Execution method, execution halted")));
         return root_table->get(NULLVAR);
 
+    }
+
+    shared_ptr<GG_Object> visit_comparision_node(Node* node){
+        shared_ptr<GG_Object> left;
+        shared_ptr<GG_Object> right;
+        shared_ptr<GG_Object> res;
+        if (node->left_node != nullptr){
+            left = execute(node->left_node);
+        }else{
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Left Node Of the Parsed Tree")));
+            return root_table->get(NULLVAR);
+        }
+        if (node->right_node != nullptr){
+            right = execute(node->right_node);
+        }else{
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "Unkown Error NULL Object On The Right Node Of the Parsed Tree")));
+            return root_table->get(NULLVAR);
+        }
+
+        if (node->token.type == TT_EE){
+            res = left->equal_to(right);
+        }else if (node->token.type == TT_GE){
+            res = left->greater_than_or_equal_to(right);
+        }else if (node->token.type == TT_LE){
+            res = left->less_than_or_equal_to(right);
+        }else if (node->token.type == TT_GREATER){
+            res = left->greater_than(right);
+        }else if (node->token.type == TT_LESS){
+            res = left->less_than(right);
+        }
+        if (res == nullptr){
+            error_check->err_register(new RuntimeError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
+        }
+
+        return res;
     }
 
     shared_ptr<GG_Object> visit_var_access_node(Node* node){

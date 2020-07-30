@@ -24,12 +24,12 @@ public:
         long int t = 1;
         long int f = 0;
 
-        table["null"] = make_shared<Undefined>(Undefined());
-        table["null"]->not_tmp();
-        table["true"] = make_shared<Numeric>(Numeric(t));
-        table["true"]->not_tmp();
-        table["false"] = make_shared<Numeric>(Numeric(f));
-        table["false"]->not_tmp();
+        table[NULLVAR] = make_shared<Undefined>(Undefined());
+        table[NULLVAR]->not_tmp();
+        table[TRUE] = make_shared<Numeric>(Numeric(t));
+        table[TRUE]->not_tmp();
+        table[FALSE] = make_shared<Numeric>(Numeric(f));
+        table[FALSE]->not_tmp();
         is_root = true;
     }
 

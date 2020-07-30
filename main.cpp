@@ -40,7 +40,7 @@ int run(string& text){
         error_check->display_msg();
         return -1;
     }
-    cout << result->get_type()<<endl;
+
     if (result->get_type() == TT_INT){
         cout << result->get_int_val()<<endl;
     }else if (result->get_type() == TT_FLOAT){

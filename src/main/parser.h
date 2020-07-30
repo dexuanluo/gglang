@@ -109,8 +109,38 @@ public:
         return res;
     }
 
-    Node *expression() {
+    Node *arith_expression(){
         Node *res = term();
+        skip_WS();
+        if (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS)){
+
+            Token token = *cur;
+            next();
+            res = new BinOpNode(res, token, arith_expression());
+        }
+
+
+        return res;
+    }
+
+    Node *comp_expression(){
+        Node *res = arith_expression();
+        skip_WS();
+        if (cur != tokens.end() && (cur->type == TT_EE || cur->type == TT_GE ||\
+        cur->type == TT_LE || cur->type == TT_GREATER || cur->type == TT_LESS)){
+            Token token = *cur;
+            next();
+            res = new ComparisionNode(res, token, comp_expression());
+        }
+
+
+        return res;
+    }
+
+
+
+    Node *expression() {
+        Node *res = comp_expression();
         skip_WS();
         if (cur != tokens.end() && cur->type == TT_KEYWORD && cur->get_string_val() == VAR){
             next();
@@ -140,12 +170,7 @@ public:
 
 
 
-        if (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS) ){
 
-            Token token = *cur;
-            next();
-            res = new BinOpNode(res, token, expression());
-        }
 
 
         if (res == nullptr && cur != tokens.end()){
