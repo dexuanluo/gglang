@@ -127,7 +127,7 @@ public:
         Node *res = arith_expression();
         skip_WS();
         if (cur != tokens.end() && (cur->type == TT_EE || cur->type == TT_GE ||\
-        cur->type == TT_LE || cur->type == TT_GREATER || cur->type == TT_LESS)){
+        cur->type == TT_LE || cur->type == TT_GREATER || cur->type == TT_LESS || cur->type == TT_NE)){
             Token token = *cur;
             next();
             res = new ComparisionNode(res, token, comp_expression());

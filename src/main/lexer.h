@@ -225,6 +225,25 @@ public:
         return 0;
     }
 
+    short int handle_EXCLAMATION(vector<Token>* tokens){
+        if(cur_char == EXCLAMATION){
+            if (ws_count != 0){
+                ws_count = 0;
+            }
+            next();
+            if (cur_char == EQUAL){
+                tokens->push_back(Token(TT_NE));
+                next();
+            }else{
+                error_check->err_register(new LexerError(Token(TT_ERR, "EXPECTING '=' ")));
+            }
+
+
+            return 1;
+        }
+        return 0;
+    }
+
     short int handle_GREATER(vector<Token>* tokens){
         if(cur_char == GREATER){
             next();
@@ -313,14 +332,18 @@ public:
 
             }else if(handle_LESS(tokens)){
 
+            }else if (handle_EXCLAMATION(tokens)){
+
             }else if(handle_OP_SEMICOL(tokens)){
 
-            }else if(error_check->is_error()){
+            }else {
+                error_check->err_register(new LexerError(Token(TT_ERR, "Meaningless symbol  " + cur_char + "  " + " LOL")));
                 delete tokens;
                 tokens = nullptr;
                 return tokens;
-            }else {
-                error_check->err_register(new LexerError(Token(TT_ERR, "Meaningless symbol  " + cur_char + "  " + " LOL")));
+            }
+
+            if(error_check->is_error()){
                 delete tokens;
                 tokens = nullptr;
                 return tokens;

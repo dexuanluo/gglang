@@ -81,6 +81,8 @@ public:
 
         if (node->token.type == TT_EE){
             res = left->equal_to(right);
+        }else if (node->token.type == TT_NE){
+            res = left->not_equal_to(right);
         }else if (node->token.type == TT_GE){
             res = left->greater_than_or_equal_to(right);
         }else if (node->token.type == TT_LE){

@@ -6,7 +6,9 @@ _Author: Dexuan Luo_
         gg >> a
         10
         
-## Logical Operator<br/>
+## Logical Operator<br/> 
+Logical operation return `int` `1` as `true` and `int` `0` as `false`
+
         gg >> true
         1
         gg >> false
@@ -15,6 +17,9 @@ _Author: Dexuan Luo_
         
         gg >> a == b;
         0
+        
+        gg >> a != b + 3;
+        1
         
         gg >> a >= b;
         1
@@ -99,8 +104,13 @@ The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `
 
 #### expr: <br/>
         KEYWORD:var IDENTIFIER EQUAL expr    //variable assignment
-        term((PLUS|MINUS)expr)*
 
+#### comp_expr: <br/>
+        arith_expr ((EE|NE|GE|LE|GREATER|LESS) arith_expr)*
+        
+#### arith_expr: <br/>
+        term((PLUS|MINUS) arith_expr)*
+        
 #### term: <br/>
         factor((MUL|DIV)factor)*
 
