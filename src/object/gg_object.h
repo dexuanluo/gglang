@@ -35,6 +35,19 @@ public:
         return other;
     };
 
+    virtual shared_ptr<GG_Object> not_to(){
+        shared_ptr<GG_Object> other;
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> and_by(shared_ptr<GG_Object> other){
+        return other;
+    };
+
+    virtual shared_ptr<GG_Object> or_by(shared_ptr<GG_Object> other){
+        return other;
+    };
+
     virtual shared_ptr<GG_Object> equal_to(shared_ptr<GG_Object> other){
         return other;
     };
@@ -282,7 +295,7 @@ public:
         return make_shared<Undefined>(Undefined());
     }
 
-    shared_ptr<GG_Object> multiplied_by(shared_ptr<GG_Object> other) override{
+    shared_ptr<GG_Object> multiplied_by(shared_ptr<GG_Object> other) override {
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
@@ -336,7 +349,7 @@ public:
         return make_shared<Undefined>(Undefined());
     }
 
-    shared_ptr<GG_Object> divided_by(shared_ptr<GG_Object> other) override{
+    shared_ptr<GG_Object> divided_by(shared_ptr<GG_Object> other) override {
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
@@ -394,7 +407,7 @@ public:
         return make_shared<Undefined>(Undefined());
     }
 
-    shared_ptr<GG_Object> power_to(shared_ptr<GG_Object> other) override{
+    shared_ptr<GG_Object> power_to(shared_ptr<GG_Object> other) override {
 
         if (type == TT_INT && other->get_type() == TT_INT){
 
@@ -450,7 +463,7 @@ public:
         return make_shared<Undefined>(Undefined());
     }
 
-    shared_ptr<GG_Object> equal_to(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> equal_to(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -508,7 +521,7 @@ public:
         return make_shared<Undefined>(Undefined());
     };
 
-    shared_ptr<GG_Object> not_equal_to(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> not_equal_to(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -566,7 +579,7 @@ public:
         return make_shared<Undefined>(Undefined());
     };
 
-    shared_ptr<GG_Object> greater_than(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> greater_than(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -624,7 +637,7 @@ public:
         return make_shared<Undefined>(Undefined());
     };
 
-    shared_ptr<GG_Object> greater_than_or_equal_to(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> greater_than_or_equal_to(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -682,7 +695,7 @@ public:
         return make_shared<Undefined>(Undefined());
     };
 
-    shared_ptr<GG_Object> less_than(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> less_than(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -740,7 +753,7 @@ public:
         return make_shared<Undefined>(Undefined());
     };
 
-    shared_ptr<GG_Object> less_than_or_equal_to(shared_ptr<GG_Object> other){
+    shared_ptr<GG_Object> less_than_or_equal_to(shared_ptr<GG_Object> other) override {
         if (type == TT_INT && other->get_type() == TT_INT){
 
             try{
@@ -795,6 +808,133 @@ public:
 
         }
         error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined '<=' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> not_to() override {
+        if (type == TT_INT){
+            long int tmp = !get_int_val();
+            return make_shared<Numeric>(Numeric(tmp));
+        }else if(type == TT_FLOAT){
+            long int tmp = !get_dl_val();
+            return make_shared<Numeric>(Numeric(tmp));
+        }
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> and_by(shared_ptr<GG_Object> other) override {
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() && other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() && other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() && other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() && other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined 'and' operation between " + get_type() + " and " + other->get_type())));
+        return make_shared<Undefined>(Undefined());
+    };
+
+    shared_ptr<GG_Object> or_by(shared_ptr<GG_Object> other) override {
+        if (type == TT_INT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_int_val() || other->get_int_val();
+                shared_ptr<GG_Object> res = make_shared<Numeric>(Numeric(tmp));
+                return res;
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_INT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_int_val() || other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_FLOAT){
+
+            try{
+                long int tmp = this->get_dl_val() || other->get_dl_val();
+                return make_shared<Numeric>(Numeric(tmp));
+
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }else if (type == TT_FLOAT && other->get_type() == TT_INT){
+
+            try{
+                long int tmp = this->get_dl_val() || other->get_int_val();
+                return make_shared<Numeric>(Numeric(tmp));
+            }catch(const std::exception& e){
+                cout << e.what() <<endl;
+                error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "Unknown Error for Comparision Operation")));
+                return make_shared<Undefined>(Undefined());
+            }
+
+
+        }
+        error_check->err_register(new RuntimeError(Token(RUNTIME_ERR_NODE, "No defined 'or' operation between " + get_type() + " and " + other->get_type())));
         return make_shared<Undefined>(Undefined());
     };
 

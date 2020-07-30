@@ -208,9 +208,9 @@ public:
     }
 
     short int handle_EQUAL(vector<Token>* tokens){
-        if(cur_char == EQUAL){
+        if(cur_char == OP_EQUAL){
             next();
-            if (cur_char == EQUAL){
+            if (cur_char == OP_EQUAL){
                 tokens->push_back(Token(TT_EE));
                 next();
             }else{
@@ -226,16 +226,18 @@ public:
     }
 
     short int handle_EXCLAMATION(vector<Token>* tokens){
-        if(cur_char == EXCLAMATION){
+        // `!` is simply handled by replacing it with `not` keyword
+        if(cur_char == OP_EXCLAMATION){
             if (ws_count != 0){
                 ws_count = 0;
             }
             next();
-            if (cur_char == EQUAL){
+            if (cur_char == OP_EQUAL){
                 tokens->push_back(Token(TT_NE));
                 next();
             }else{
-                error_check->err_register(new LexerError(Token(TT_ERR, "EXPECTING '=' ")));
+                tokens->push_back(Token(TT_KEYWORD, OP_NOT));
+                next();
             }
 
 
@@ -245,9 +247,9 @@ public:
     }
 
     short int handle_GREATER(vector<Token>* tokens){
-        if(cur_char == GREATER){
+        if(cur_char == OP_GREATER){
             next();
-            if (cur_char == EQUAL){
+            if (cur_char == OP_EQUAL){
                 tokens->push_back(Token(TT_GE));
                 next();
             }else{
@@ -263,9 +265,9 @@ public:
     }
 
     short int handle_LESS(vector<Token>* tokens){
-        if(cur_char == LESS){
+        if(cur_char == OP_LESS){
             next();
-            if (cur_char == EQUAL){
+            if (cur_char == OP_EQUAL){
                 tokens->push_back(Token(TT_LE));
                 next();
             }else{

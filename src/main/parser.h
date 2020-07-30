@@ -113,7 +113,6 @@ public:
         Node *res = term();
         skip_WS();
         if (cur != tokens.end() && (cur->type == TT_PLUS || cur->type == TT_MINUS)){
-
             Token token = *cur;
             next();
             res = new BinOpNode(res, token, arith_expression());
@@ -126,6 +125,11 @@ public:
     Node *comp_expression(){
         Node *res = arith_expression();
         skip_WS();
+        if(cur != tokens.end() && (cur->type == TT_KEYWORD && cur->get_string_val() == OP_NOT)){
+            Token token = *cur;
+            next();
+            res = new UnaryOpNode(token, comp_expression());
+        }
         if (cur != tokens.end() && (cur->type == TT_EE || cur->type == TT_GE ||\
         cur->type == TT_LE || cur->type == TT_GREATER || cur->type == TT_LESS || cur->type == TT_NE)){
             Token token = *cur;
@@ -137,12 +141,10 @@ public:
         return res;
     }
 
-
-
     Node *expression() {
         Node *res = comp_expression();
         skip_WS();
-        if (cur != tokens.end() && cur->type == TT_KEYWORD && cur->get_string_val() == VAR){
+        if (cur != tokens.end() && cur->type == TT_KEYWORD && cur->get_string_val() == OP_VAR){
             next();
             skip_WS();
             if (cur != tokens.end() && cur->type == TT_IDENTIFIER){
@@ -167,6 +169,14 @@ public:
             }
         }
 
+
+        if(cur != tokens.end() && cur->type == TT_KEYWORD && (cur->get_string_val() == OP_AND || cur->get_string_val() == OP_OR)){
+            Token token = *cur;
+            next();
+            skip_WS();
+            res = new ComparisionNode(res, token, comp_expression());
+
+        }
 
 
 
@@ -203,6 +213,7 @@ public:
 
 
     }
+
     void skip_WS(){
         while (cur != tokens.end() && (cur->type == TT_WS || cur->type == TT_ESCAPE)) {
             next();

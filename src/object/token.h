@@ -52,11 +52,14 @@ static const string & WS_TAB = *new const string("\t");
 static const string & WS_SPACE = *new const string(" ");
 static const string & DOT = *new const string(".");
 static const string & UNDERSCORE = *new const string("_");
-static const string & EQUAL = *new const string("=");
-static const string & EXCLAMATION = *new const string("!");
-static const string & LESS = *new const string("<");
-static const string & GREATER = *new const string(">");
-static const string & VAR = *new const string("var");
+static const string & OP_EQUAL = *new const string("=");
+static const string & OP_EXCLAMATION = *new const string("!");
+static const string & OP_LESS = *new const string("<");
+static const string & OP_GREATER = *new const string(">");
+static const string & OP_VAR = *new const string("var");
+static const string & OP_AND = *new const string("and");
+static const string & OP_OR = *new const string("or");
+static const string & OP_NOT = *new const string("not");
 static const string & NULLVAR = *new const string("null");
 static const string & TRUE = *new const string("true");
 static const string & FALSE = *new const string("false");
@@ -66,8 +69,8 @@ static const unordered_set<char> & LETTER = *new const unordered_set<char>({'A',
                                                                                     'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' , 'k', 'l',\
                                                                                     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' ,'w',\
                                                                                     'x', 'y', 'z'});
-static const unordered_set<string> & KEYWORD = *new const unordered_set<string>({"var", "gg"});
-static const unordered_set<string> & RUNTIMEVAR = *new const unordered_set<string>({"null", "true", "false"});
+static const unordered_set<string> & KEYWORD = *new const unordered_set<string>({OP_VAR, GG, OP_AND, OP_NOT, OP_OR});
+static const unordered_set<string> & RUNTIMEVAR = *new const unordered_set<string>({NULLVAR, TRUE, FALSE});
 //###################################
 //     Operation Type
 //###################################

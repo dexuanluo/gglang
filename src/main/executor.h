@@ -91,6 +91,10 @@ public:
             res = left->greater_than(right);
         }else if (node->token.type == TT_LESS){
             res = left->less_than(right);
+        }else if (node->token.type == TT_KEYWORD && node->token.get_string_val() == OP_AND){
+            res = left->and_by(right);
+        }else if (node->token.type == TT_KEYWORD && node->token.get_string_val() == OP_OR){
+            res = left->or_by(right);
         }
         if (res == nullptr){
             error_check->err_register(new RuntimeError(Token(TT_ERR, "No " + node->token.type + " operation is defined for " + left->get_type() + " and " + right->get_type())));
@@ -137,7 +141,11 @@ public:
 //            gc->garbage_register(tmp);
 //            gc->garbage_register(tmp2);
             return tmp2;
+        }else if (node->token.type == TT_KEYWORD && node->token.get_string_val() == OP_NOT){
+            res = res->not_to();
         }
+
+
         return res;
     }
 

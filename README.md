@@ -1,6 +1,11 @@
-# Supported Grammar
+
+
+# GG LANG
 _Author: Dexuan Luo_
 
+`gg lang` is a **Turing Complete** scripted language powered by `C++`.
+
+#Supported Grammar 
 ## Variable Assignment<br/>
         gg >> var a = 10;
         gg >> a
@@ -33,8 +38,14 @@ Logical operation return `int` `1` as `true` and `int` `0` as `false`
         gg >> a < b;
         0
         
+        gg >> a and b;
+        0
+        
+        gg >> a or b;
+        1
+        
 ## Arithmetic Operation
-The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `c++`, `FLOAT` is `double` in `c++`.
+The Arithmetic behavior is based on `C++`. `INT` in `gg lang` is `long int` in `C++`, `FLOAT` is `double` in `c++`.
 #### Addition and Subtraction: <br/>
         gg >> var a = 1; var b = 2
         
@@ -104,8 +115,10 @@ The Arithmetic behavior is based on `c++`. `INT` in `gg lang` is `long int` in `
 
 #### expr: <br/>
         KEYWORD:var IDENTIFIER EQUAL expr    //variable assignment
+        comp_expr ((KEYWORD: and|or) comp_expr)*
 
 #### comp_expr: <br/>
+        KEYWORD:not|EXCLAMATION  com_expr
         arith_expr ((EE|NE|GE|LE|GREATER|LESS) arith_expr)*
         
 #### arith_expr: <br/>
