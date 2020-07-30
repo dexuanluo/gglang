@@ -5,7 +5,7 @@ _Author: Dexuan Luo_
 
 `gg lang` is a **Turing Complete** scripted language powered by `C++`.
 
-#Supported Grammar 
+# Supported Grammar 
 ## Variable Assignment<br/>
         gg >> var a = 10;
         gg >> a
@@ -115,7 +115,7 @@ The Arithmetic behavior is based on `C++`. `INT` in `gg lang` is `long int` in `
 
 #### expr: <br/>
         KEYWORD:var IDENTIFIER EQUAL expr    //variable assignment
-        comp_expr ((KEYWORD: and|or) comp_expr)*
+        comp_expr ((KEYWORD: and|or) expr)*
 
 #### comp_expr: <br/>
         KEYWORD:not|EXCLAMATION  com_expr

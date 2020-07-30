@@ -174,7 +174,7 @@ public:
             Token token = *cur;
             next();
             skip_WS();
-            res = new ComparisionNode(res, token, comp_expression());
+            res = new ComparisionNode(res, token, expression());
 
         }
 
